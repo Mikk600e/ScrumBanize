@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using QuickAPITest.Definitions;
 using RestSharp;
 using RestSharp.Authenticators;
+using RestSharp.Serialization;
+using RestSharp.Deserializers;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace QuickAPITest
 {
@@ -13,23 +17,31 @@ namespace QuickAPITest
 	{
 		static void Main(string[] args)
 		{
-            List<KanbanizeTask> kanbanizeTasks = GetKanbanizeTasks("9", "til udvikler");
-
+			List<Item> kanbanizeTasks = GetKanbanizeTasks("9", "til udvikler");
+			
 		}
 
-        static List<KanbanizeTask> GetKanbanizeTasks( string boardId, string laneName)
-        {
-            List<KanbanizeTask> kanbanizeTasks = new List<KanbanizeTask>();
+		static List<Item> GetKanbanizeTasks(string boardId, string laneName)
+		{
+			List<Item> container = new List<Item>();
+			KanbanizeTaskList kanbanizeTasks = new KanbanizeTaskList();
+			var client = new RestClient("https://freeway.kanbanize.com/index.php/api/kanbanize");
+			var request = new RestRequest("/get_all_tasks", Method.POST);
+			request.AddHeader("apikey", "mMt64VOgJK4pqlSKhnE6XUCoLDCOcbAEoFUtUJjI");
+			request.AddJsonBody(new { boardid = boardId, lane = laneName });
+			var response = client.Post(request);
+			var xmlDeserializer = new RestSharp.Deserializers.XmlDeserializer();
+			/*
+			 * foreach result
+			 * new Kanb anizerTask = result
+			 * add task to list
+			 */
+			 
+			var result = xmlDeserializer.Deserialize<KanbanizeTaskList>(response);
+			container.AddRange(result.TaskList);
+			
 
-            var client = new RestClient("https://freeway.kanbanize.com/index.php/api/kanbanize");
-            var request = new RestRequest("/get_all_tasks", Method.POST);
-            request.AddHeader("apikey", "mMt64VOgJK4pqlSKhnE6XUCoLDCOcbAEoFUtUJjI");
-            request.AddJsonBody(new { boardid = boardId, lane = laneName });
-            var response = client.Post(request);
-
-            return kanbanizeTasks;
-        }
-
-        
+			return container;
+		}
 	}
 }
