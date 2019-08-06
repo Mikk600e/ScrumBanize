@@ -23,7 +23,7 @@ namespace QuickAPITest
             this._apiurl = apiurl;
         }
 
-        public bool CreateBacklogItem(string title, string description, ScrumwisePriority priority, string projectId, string backlogListId, params string[] tagIDs)
+        public bool CreateBacklogItem(ScrumwiseItem scrumwiseItem) // string title, string description, ScrumwisePriority priority, string projectId, string backlogListId, params string[] tagIDs
         {
             try
             {
@@ -31,12 +31,12 @@ namespace QuickAPITest
                 client.Authenticator = new HttpBasicAuthenticator(_userName, _key);
 
                 RestRequest req = new RestRequest("addBacklogItem", Method.POST);
-                req.AddParameter("projectID", projectId);
-                req.AddParameter("backlogListID", backlogListId);
-                req.AddParameter("type", "Bug");
-                req.AddParameter("name", title);
-                req.AddParameter("description", description);
-                switch (priority)
+                req.AddParameter("projectID", scrumwiseItem.ProjectId); 
+                req.AddParameter("backlogListID", scrumwiseItem.BacklogListId);
+                req.AddParameter("type", scrumwiseItem.Type);
+                req.AddParameter("name", scrumwiseItem.Title);
+                req.AddParameter("description", scrumwiseItem.Description);
+                switch (scrumwiseItem.Priority)
                 {
                     case ScrumwisePriority.Normal: break;//no specific priority for this req.AddParameter("priority", "Medi");
                     case ScrumwisePriority.High: req.AddParameter("priority", "High"); break;
@@ -50,7 +50,8 @@ namespace QuickAPITest
                 if (createResult.IsSuccessful)
                 {
                     string itemID = createResult.Data.Result;
-                    foreach (var tagID in tagIDs)
+                    scrumwiseItem.ItemId = itemID;
+                    foreach (var tagID in scrumwiseItem.TagIds)
                     {
                         AddTag(itemID, tagID);
                     }
