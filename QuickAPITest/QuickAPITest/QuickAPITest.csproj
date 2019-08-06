@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Definitions\CreateBacklogItemResult.cs" />
     <Compile Include="Definitions\KanbanizeTask.cs" />
+    <Compile Include="Definitions\KanbanizeTaskList.cs" />
     <Compile Include="Definitions\ScrumwiseItem.cs" />
     <Compile Include="Definitions\ScrumwisePriority.cs" />
     <Compile Include="Program.cs" />
