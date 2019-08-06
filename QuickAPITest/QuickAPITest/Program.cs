@@ -16,13 +16,14 @@ namespace QuickAPITest
 	{
 		static void Main(string[] args)
 		{
-			List<Item> kanbanizeTasks = GetKanbanizeTasks("9", "til udvikler");
-			//scrumwise scrumwiseConnection = new Scrumwise("niels@freeway.dk", "591D5EAF2868B8B0531D9B0BF03A017AE3F87BFFDF6A4919FC375CB6229B7351", "https://api.scrumwise.com/service/api/v1/");
-		}
+            KanbanizeTaskList kanbanizeTasks = GetKanbanizeTasks("9", "til udvikler");
+			Scrumwise scrumwiseConnection = new Scrumwise("niels@freeway.dk", "591D5EAF2868B8B0531D9B0BF03A017AE3F87BFFDF6A4919FC375CB6229B7351", "https://api.scrumwise.com/service/api/v1/");
 
-		static List<Item> GetKanbanizeTasks(string boardId, string laneName)
+        }
+
+		static KanbanizeTaskList GetKanbanizeTasks(string boardId, string laneName)
 		{
-			List<Item> container = new List<Item>();
+			//List<Item> container = new List<Item>();
 			KanbanizeTaskList kanbanizeTasks = new KanbanizeTaskList();
 			var client = new RestClient("https://freeway.kanbanize.com/index.php/api/kanbanize");
 			var request = new RestRequest("/get_all_tasks", Method.POST);
@@ -30,17 +31,12 @@ namespace QuickAPITest
 			request.AddJsonBody(new { boardid = boardId, lane = laneName });
 			var response = client.Post(request);
 			var xmlDeserializer = new RestSharp.Deserializers.XmlDeserializer();
-			/*
-			 * foreach result
-			 * new Kanb anizerTask = result
-			 * add task to list
-			 */
-
-			var result = xmlDeserializer.Deserialize<KanbanizeTaskList>(response);
-			container.AddRange(result.TaskList);
+            
+            kanbanizeTasks = xmlDeserializer.Deserialize<KanbanizeTaskList>(response);
+			//container.AddRange(result.TaskList);
 
 
-			return container;
+			return kanbanizeTasks;
 		}
 	}
 }
