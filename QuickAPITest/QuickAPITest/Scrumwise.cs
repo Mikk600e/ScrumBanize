@@ -71,6 +71,7 @@ namespace QuickAPITest
 
         public bool GetKanbanizeItemsInScrumwise(string kanbanizeTagId)
         {
+            Projects scrumwiseItemList = new Projects();
             RestClient client = new RestClient(_apiurl);
             client.Authenticator = new HttpBasicAuthenticator(_userName, _key);
 
@@ -78,6 +79,9 @@ namespace QuickAPITest
             //request.AddParameter("ProjectIDs", "191469-0-5");
             request.AddParameter("includeProperties", "Project.backlogItems,BacklogItem.tasks");
             var response = client.Post(request);
+            var xmlDeserializer = new RestSharp.Deserializers.XmlDeserializer();
+
+            scrumwiseItemList = xmlDeserializer.Deserialize<Projects>(response);
 
             return false;
         }
