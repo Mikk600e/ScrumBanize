@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace QuickAPITest
 {
     class Scrumwise
@@ -79,7 +80,14 @@ namespace QuickAPITest
             //request.AddParameter("ProjectIDs", "191469-0-5");
             request.AddParameter("includeProperties", "Project.backlogItems,BacklogItem.tasks");
             var response = client.Post(request);
+            IRestResponse<Projects> response2 = client.Execute<Projects>(request);
+            var test = SimpleJson.DeserializeObject(response.Content);
+            //ScrumwiseItem testItem = new ScrumwiseItem();
+            
+            //var testItem= test.Values[3];
+            //scrumwiseItemList = response.Content;
             var xmlDeserializer = new RestSharp.Deserializers.XmlDeserializer();
+            
 
             scrumwiseItemList = xmlDeserializer.Deserialize<Projects>(response);
 
