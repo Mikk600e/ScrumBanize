@@ -12,13 +12,16 @@ namespace QuickAPITest
 	{
 		private string _boardID;
 		private string _lane;
+		Scrumwise methodSlave; 
 
 		public Kanbanize(string boardID, string lane)
 		{
+			
 			this._boardID = boardID;
 			this._lane = lane;
 			KanbanizeTaskList items = GetKanbanizeTasks(boardID, lane);
 			List<ScrumwiseItem> scrumwiseTask = ConvertKanbasToScrum(items);
+			methodSlave.CreateBacklogItem(scrumwiseTask);
 		}
 		public KanbanizeTaskList GetKanbanizeTasks(string boardId, string laneName)
 		{
@@ -32,11 +35,10 @@ namespace QuickAPITest
 			var xmlDeserializer = new RestSharp.Deserializers.XmlDeserializer();
 			return kanbanizeTasks = xmlDeserializer.Deserialize<KanbanizeTaskList>(response);
 			//container.AddRange(result.TaskList);
-
 		}
 		public List<ScrumwiseItem> ConvertKanbasToScrum(KanbanizeTaskList kanbasTask)
 		{
-			List<ScrumwiseItem> scrumItem = new List<ScrumwiseItem>();
+			List<ScrumwiseItem> scrumItems = new List<ScrumwiseItem>();
 			for (int i = 0; i < kanbasTask.TaskList.Count; i++)
 			{
 				ScrumwiseItem container = new ScrumwiseItem();
@@ -48,9 +50,9 @@ namespace QuickAPITest
 				container.TagIds = new string[1] { "191469-2533-1" };
 				container.Title = kanbasTask.TaskList[i].Title;
 				container.Type = "Bug";
-				scrumItem.Add(container);
+				scrumItems.Add(container);
 			}
-			return scrumItem;
+			return scrumItems;
 		}
 	}
 }
