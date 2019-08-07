@@ -54,11 +54,7 @@
     <Compile Include="Definitions\ScrumwiseItem.cs" />
     <Compile Include="Definitions\ScrumwiseItemList.cs" />
     <Compile Include="Definitions\ScrumwisePriority.cs" />
-<<<<<<< HEAD
     <Compile Include="Definitions\ScrumwiseProject.cs" />
-=======
-    <Compile Include="Definitions\KanbanizeSubtaskdetail.cs" />
->>>>>>> 43ef49c22f127edc5b80b9df485f1422c78f414a
     <Compile Include="Kanbanize.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
