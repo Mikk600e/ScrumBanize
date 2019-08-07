@@ -17,8 +17,10 @@ namespace QuickAPITest
 		{
 			this._boardID = boardID;
 			this._lane = lane;
+			KanbanizeTaskList items = GetKanbanizeTasks(boardID, lane);
+			List<ScrumwiseItem> scrumwiseTask = ConvertKanbasToScrum(items);
 		}
-		public bool GetKanbanizeTasks(string boardId, string laneName)
+		public KanbanizeTaskList GetKanbanizeTasks(string boardId, string laneName)
 		{
 			//List<Item> container = new List<Item>();
 			KanbanizeTaskList kanbanizeTasks = new KanbanizeTaskList();
@@ -28,13 +30,27 @@ namespace QuickAPITest
 			request.AddJsonBody(new { boardid = boardId, lane = laneName });
 			var response = client.Post(request);
 			var xmlDeserializer = new RestSharp.Deserializers.XmlDeserializer();
-
-			kanbanizeTasks = xmlDeserializer.Deserialize<KanbanizeTaskList>(response);
+			return kanbanizeTasks = xmlDeserializer.Deserialize<KanbanizeTaskList>(response);
 			//container.AddRange(result.TaskList);
 
-
-			return true;
 		}
-
+		public List<ScrumwiseItem> ConvertKanbasToScrum(KanbanizeTaskList kanbasTask)
+		{
+			List<ScrumwiseItem> scrumItem = new List<ScrumwiseItem>();
+			for (int i = 0; i < kanbasTask.TaskList.Count; i++)
+			{
+				ScrumwiseItem container = new ScrumwiseItem();
+				container.BacklogListId = "191469-2531-15";
+				container.Description = kanbasTask.TaskList[i].Description;
+				container.ExternalId = kanbasTask.TaskList[i].TaskId;
+				container.Priority = ScrumwisePriority.High;
+				container.ProjectId = "191469-0-5";
+				container.TagIds = new string[1] { "191469-2533-1" };
+				container.Title = kanbasTask.TaskList[i].Title;
+				container.Type = "Bug";
+				scrumItem.Add(container);
+			}
+			return scrumItem;
+		}
 	}
 }
