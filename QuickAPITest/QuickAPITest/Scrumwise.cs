@@ -69,6 +69,19 @@ namespace QuickAPITest
             return false;
         }
 
+        public bool GetKanbanizeItemsInScrumwise(string kanbanizeTagId)
+        {
+            RestClient client = new RestClient(_apiurl);
+            client.Authenticator = new HttpBasicAuthenticator(_userName, _key);
+
+            RestRequest request = new RestRequest("getData", Method.POST);
+            //request.AddParameter("ProjectIDs", "191469-0-5");
+            request.AddParameter("includeProperties", "Project.backlogItems,BacklogItem.tasks");
+            var response = client.Post(request);
+
+            return false;
+        }
+
         private void AddTag(string itemID, string tagID)
         {
             RestClient client = new RestClient(_apiurl);

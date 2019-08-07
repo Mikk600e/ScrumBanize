@@ -14,10 +14,21 @@ namespace QuickAPITest
 {
 	class Program
 	{
-		static void Main(string[] args)
+        
+
+
+        static void Main(string[] args)
 		{
-			Kanbanize kanbanizeTasks = new Kanbanize("9", "til udvikler");
-			Scrumwise scrumwiseConnection = new Scrumwise("niels@freeway.dk", "591D5EAF2868B8B0531D9B0BF03A017AE3F87BFFDF6A4919FC375CB6229B7351", "https://api.scrumwise.com/service/api/v1/");
+            string scrumwiseUser = "niels@freeway.dk";
+            string scrumwiseKey = "591D5EAF2868B8B0531D9B0BF03A017AE3F87BFFDF6A4919FC375CB6229B7351";
+            string scrumwiseAPI = "https://api.scrumwise.com/service/api/v1/";
+            string scrumwiseKanbanizeTag = "191469-2533-1";
+            string kanbanizeBoardId = "9";
+            string kanbanizeLane = "til udvikler";
+
+            //Kanbanize kanbanizeTasks = new Kanbanize(kanbanizeBoardId, kanbanizeLane);
+			Scrumwise scrumwiseConnection = new Scrumwise(scrumwiseUser, scrumwiseKey, scrumwiseAPI);
+            scrumwiseConnection.GetKanbanizeItemsInScrumwise(scrumwiseKanbanizeTag);
 
         }
 	}
