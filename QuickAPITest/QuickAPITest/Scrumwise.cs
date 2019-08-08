@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace QuickAPITest
 {
+    
     class Scrumwise
     {
 
@@ -24,7 +25,7 @@ namespace QuickAPITest
             this._apiurl = apiurl;
         }
 
-        public bool CreateBacklogItem(ScrumwiseItem scrumwiseItem) 
+        public bool CreateBacklogItem(ScrumwiseItem scrumwiseItem)
         {
             try
             {
@@ -70,26 +71,24 @@ namespace QuickAPITest
             return false;
         }
 
-        public bool GetKanbanizeItemsInScrumwise(string kanbanizeTagId)
+        public bool GetKanbanizeItemsInScrumwise(string kanbanizeTagId, string scrumwiseProjectId)
         {
             Projects scrumwiseItemList = new Projects();
             RestClient client = new RestClient(_apiurl);
             client.Authenticator = new HttpBasicAuthenticator(_userName, _key);
 
             RestRequest request = new RestRequest("getData", Method.POST);
-            //request.AddParameter("ProjectIDs", "191469-0-5");
+            request.AddParameter("projectIDs", scrumwiseProjectId);
             request.AddParameter("includeProperties", "Project.backlogItems,BacklogItem.tasks");
             var response = client.Post(request);
-            IRestResponse<Projects> response2 = client.Execute<Projects>(request);
-            var test = SimpleJson.DeserializeObject(response.Content);
-            //ScrumwiseItem testItem = new ScrumwiseItem();
-            
-            //var testItem= test.Values[3];
-            //scrumwiseItemList = response.Content;
-            var xmlDeserializer = new RestSharp.Deserializers.XmlDeserializer();
-            
+            Rootobject test = SimpleJson.DeserializeObject<Rootobject>(response.Content);
+            foreach(Backlogitem backlogitem in test.result.projects[0].backlogItems)
+            {
+                if (backlogitem.tagIDs.Contains(kanbanizeTagId))
+                {
 
-            scrumwiseItemList = xmlDeserializer.Deserialize<Projects>(response);
+                }
+            }
 
             return false;
         }
@@ -105,5 +104,8 @@ namespace QuickAPITest
             client.Execute(request);
         }
     }
+
+    
+
 }
 

@@ -8,6 +8,6 @@ namespace QuickAPITest.Definitions
 {
     class Projects
     {
-        KanbanizeTaskList backlogItems = new KanbanizeTaskList();
+        public List<Item> backlogItems { get; set; }
     }
 }
