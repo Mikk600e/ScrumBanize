@@ -12,29 +12,30 @@ namespace QuickAPITest
 	{
 		private string _boardID;
 		private string _lane;
-		
+		private string _apiurl;
+		private string _apiKey;
+		private string _apiKeyValue;
 
-		public Kanbanize(string boardID, string lane)
+		public Kanbanize(string boardID, string lane, string apiurl, string apiKey, string apiKeyValue)
 		{
 			
 			this._boardID = boardID;
 			this._lane = lane;
-			KanbanizeTaskList items = GetKanbanizeTasks();
-			ScrumwiseItemList scrumwiseTask = ConvertKanbasToScrum(items);
-			//methodSlave.CreateBacklogItem(scrumwiseTask);
+			this._apiurl = apiurl;
+			this._apiKey = apiKey;
+			this._apiKeyValue = apiKeyValue;
+			GetKanbanizeTasks();
 		}
 		public KanbanizeTaskList GetKanbanizeTasks()
 		{
-			//List<Item> container = new List<Item>();
 			KanbanizeTaskList kanbanizeTasks = new KanbanizeTaskList();
-			var client = new RestClient("https://freeway.kanbanize.com/index.php/api/kanbanize");
+			var client = new RestClient(_apiurl);
 			var request = new RestRequest("/get_all_tasks", Method.POST);
-			request.AddHeader("apikey", "mMt64VOgJK4pqlSKhnE6XUCoLDCOcbAEoFUtUJjI");
+			request.AddHeader(_apiKey, _apiKeyValue);
 			request.AddJsonBody(new { boardid = _boardID, lane = _lane });
 			var response = client.Post(request);
 			var xmlDeserializer = new RestSharp.Deserializers.XmlDeserializer();
 			return kanbanizeTasks = xmlDeserializer.Deserialize<KanbanizeTaskList>(response);
-			//container.AddRange(result.TaskList);
 		}
 		public ScrumwiseItemList ConvertKanbasToScrum(KanbanizeTaskList kanbasTask)
 		{
@@ -56,6 +57,12 @@ namespace QuickAPITest
 			}
 			
 			return scrumwiseItemList;
+		}
+		public bool CreateKanbanizeTask()
+		{
+			RestRequest client = new RestRequest(_apiurl);
+
+			return true;
 		}
 	}
 }

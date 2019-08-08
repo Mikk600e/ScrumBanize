@@ -97,16 +97,8 @@ namespace QuickAPITest
         {
             ScrumwiseItemList scrumwiseItemList = new ScrumwiseItemList();
             scrumwiseItemList.TaskList = new List<Backlogitem>();
-
-            RestClient client = new RestClient(_apiurl);
-            client.Authenticator = new HttpBasicAuthenticator(_userName, _key);
-
-            RestRequest request = new RestRequest("getData", Method.POST);
-            request.AddParameter("projectIDs", scrumwiseProjectId);
-            request.AddParameter("includeProperties", "Project.backlogItems,BacklogItem.tasks");
-            var response = client.Post(request);
-            Rootobject test = SimpleJson.DeserializeObject<Rootobject>(response.Content);
-            foreach(Backlogitem backlogitem in test.result.projects[0].backlogItems)
+			Rootobject test = GetScrumwiseItems(scrumwiseProjectId);
+			foreach (Backlogitem backlogitem in test.result.projects[0].backlogItems)
             {
                 if (backlogitem.tagIDs.Contains(kanbanizeTagId))
                 {
@@ -116,6 +108,16 @@ namespace QuickAPITest
 
             return scrumwiseItemList;
         }
+		public Rootobject GetScrumwiseItems(string scrumwiseProjectId)
+		{
+			RestClient client = new RestClient(_apiurl);
+			client.Authenticator = new HttpBasicAuthenticator(_userName, _key);
+			RestRequest request = new RestRequest("getData", Method.POST);
+			request.AddParameter("projectIDs", scrumwiseProjectId);
+			request.AddParameter("includeProperties", "Project.backlogItems,BacklogItem.tasks");
+			var response = client.Post(request);
+			return SimpleJson.DeserializeObject<Rootobject>(response.Content);
+		}
 
         private void AddTag(string itemID, string tagID)
         {
