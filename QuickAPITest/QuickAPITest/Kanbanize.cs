@@ -19,13 +19,9 @@ namespace QuickAPITest
 			
 			this._boardID = boardID;
 			this._lane = lane;
-			KanbanizeTaskList items = GetKanbanizeTasks();
-			ScrumwiseItemList scrumwiseTask = ConvertKanbasToScrum(items);
-			//methodSlave.CreateBacklogItem(scrumwiseTask);
 		}
 		public KanbanizeTaskList GetKanbanizeTasks()
 		{
-			//List<Item> container = new List<Item>();
 			KanbanizeTaskList kanbanizeTasks = new KanbanizeTaskList();
 			var client = new RestClient("https://freeway.kanbanize.com/index.php/api/kanbanize");
 			var request = new RestRequest("/get_all_tasks", Method.POST);
@@ -34,7 +30,6 @@ namespace QuickAPITest
 			var response = client.Post(request);
 			var xmlDeserializer = new RestSharp.Deserializers.XmlDeserializer();
 			return kanbanizeTasks = xmlDeserializer.Deserialize<KanbanizeTaskList>(response);
-			//container.AddRange(result.TaskList);
 		}
 		public ScrumwiseItemList ConvertKanbasToScrum(KanbanizeTaskList kanbasTask)
 		{

@@ -125,13 +125,13 @@ namespace QuickAPITest
             request.AddParameter("includeProperties", "Project.backlogItems,BacklogItem.tasks");
             var response = client.Post(request);
             Rootobject test = SimpleJson.DeserializeObject<Rootobject>(response.Content);
-            foreach(Backlogitem backlogitem in test.result.projects[0].backlogItems)
-            {
-                if (backlogitem.tagIDs.Contains(kanbanizeTagId))
-                {
+            //foreach(Backlogitem backlogitem in test.result.projects[0].backlogItems)
+            //{
+            //    if (backlogitem.tagIDs.Contains(kanbanizeTagId))
+            //    {
 
-                }
-            }
+            //    }
+            //}
 
             return false;
         }
