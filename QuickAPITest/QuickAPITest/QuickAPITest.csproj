@@ -55,6 +55,7 @@
     <Compile Include="Definitions\ScrumwiseItemList.cs" />
     <Compile Include="Definitions\ScrumwisePriority.cs" />
     <Compile Include="Definitions\ScrumwiseProject.cs" />
+    <Compile Include="Definitions\ScrumwiseResult.cs" />
     <Compile Include="Kanbanize.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
