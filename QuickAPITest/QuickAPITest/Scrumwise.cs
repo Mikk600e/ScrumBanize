@@ -25,83 +25,64 @@ namespace QuickAPITest
             this._apiurl = apiurl;
         }
 
-        public  bool CreateBacklogItem(List<Backlogitem> scrumwiseItem) 
+        public bool ImportKanbanizeToScrumwise(ScrumwiseItemList kanbanizeTaskList, ScrumwiseItemList scrumwiseItemList)
+        {
+            foreach (Backlogitem kanbanTask in kanbanizeTaskList.TaskList)
+            {
+                if (scrumwiseItemList.TaskList.Exists(x => x.externalID == kanbanTask.externalID))
+                {
+                    CreateBacklogItem(kanbanTask);
+                }
+            }
+            return false;
+        }
+
+        public  bool CreateBacklogItem(Backlogitem scrumwiseItem) 
         {
             try
             {
 				
                 RestClient client = new RestClient(_apiurl);
                 client.Authenticator = new HttpBasicAuthenticator(_userName, _key);
-                //RestRequest req = new RestRequest("addBacklogItem", Method.POST);
-				for (int i = 0; i < scrumwiseItem.Count; i++)
-				{
-					RestRequest req = new RestRequest("addBacklogItem", Method.POST);
+                RestRequest req = new RestRequest("addBacklogItem", Method.POST);
 
-					req.AddParameter("projectID", scrumwiseItem[i].projectID);
-					req.AddParameter("backlogListID", scrumwiseItem[i].backlogListID);
-					req.AddParameter("externalID", scrumwiseItem[i].externalID);
-					req.AddParameter("type", scrumwiseItem[i].type);
-					req.AddParameter("name", scrumwiseItem[i].name);
-					req.AddParameter("description", scrumwiseItem[i].description);
+				req.AddParameter("projectID", scrumwiseItem.projectID);
+				req.AddParameter("backlogListID", scrumwiseItem.backlogListID);
+				req.AddParameter("externalID", scrumwiseItem.externalID);
+				req.AddParameter("type", scrumwiseItem.type);
+				req.AddParameter("name", scrumwiseItem.name);
+				req.AddParameter("description", scrumwiseItem.description);
 
-                    if (scrumwiseItem[i].priority == ScrumwisePriority.Normal.ToString())
+                if (scrumwiseItem.priority == ScrumwisePriority.Normal.ToString())
+                {
+
+                }
+                else if (scrumwiseItem.priority == ScrumwisePriority.High.ToString())
+                {
+                    req.AddParameter("priority", "High");
+                }
+                else if (scrumwiseItem.priority == ScrumwisePriority.Urgent.ToString())
+                {
+                    req.AddParameter("priority", "Urgent");
+                }
+                else
+                {
+                    throw new Exception("Unknown priority");
+                }
+
+
+				var createResult = client.Execute<CreateBacklogItemResult>(req);
+                if (createResult.IsSuccessful)
+                {
+                    string itemID = createResult.Data.Result;
+                    scrumwiseItem.id = itemID;
+                    foreach (var tagID in scrumwiseItem.tagIDs)
                     {
-
-                    }
-                    else if (scrumwiseItem[i].priority == ScrumwisePriority.High.ToString())
-                    {
-                        req.AddParameter("priority", "High");
-                    }
-                    else if (scrumwiseItem[i].priority == ScrumwisePriority.Urgent.ToString())
-                    {
-                        req.AddParameter("priority", "Urgent");
-                    }
-                    else
-                    {
-                        throw new Exception("Unknown priority");
+                        AddTag(itemID, tagID);
                     }
 
-                    /*switch (scrumwiseItem[i].priority)
-					{
-						case ScrumwisePriority.Normal.ToString(): break;//no specific priority for this req.AddParameter("priority", "Medi");
-						case ScrumwisePriority.High.ToString(): req.AddParameter("priority", "High"); break;
-						case ScrumwisePriority.Urgent.ToString(): req.AddParameter("priority", "Urgent"); break;
-						default:
-							throw new Exception("Unknown priority");
-					}*/
-
-					var createResult = client.Execute<CreateBacklogItemResult>(req);
-
-				}
-				//req.AddParameter("projectID", scrumwiseItem[i].ProjectId);
-				//req.AddParameter("backlogListID", scrumwiseItem.BacklogListId);
-				//req.AddParameter("externalID", scrumwiseItem.ExternalId);
-				//req.AddParameter("type", scrumwiseItem.Type);
-				//req.AddParameter("name", scrumwiseItem.Title);
-				//req.AddParameter("description", scrumwiseItem.Description);
-
-				//switch (scrumwiseItem.Priority)
-				//{
-				//    case ScrumwisePriority.Normal: break;//no specific priority for this req.AddParameter("priority", "Medi");
-				//    case ScrumwisePriority.High: req.AddParameter("priority", "High"); break;
-				//    case ScrumwisePriority.Urgent: req.AddParameter("priority", "Urgent"); break;
-				//    default:
-				//        throw new Exception("Unknown priority");
-				//}
-
-				//var createResult = client.Execute<CreateBacklogItemResult>(req);
-
-                //if (createResult.IsSuccessful)
-                //{
-                //    string itemID = createResult.Data.Result;
-                //    scrumwiseItem.ItemId = itemID;
-                //    foreach (var tagID in scrumwiseItem.TagIds)
-                //    {
-                //        AddTag(itemID, tagID);
-                //    }
-
-                //    return true;
-                //}
+                    return true;
+                }
             }
             catch (Exception)
             {
@@ -112,7 +93,7 @@ namespace QuickAPITest
             return false;
         }
 
-        public bool GetKanbanizeItemsInScrumwise(string kanbanizeTagId, string scrumwiseProjectId)
+        public ScrumwiseItemList GetKanbanizeItemsInScrumwise(string kanbanizeTagId, string scrumwiseProjectId)
         {
             ScrumwiseItemList scrumwiseItemList = new ScrumwiseItemList();
             scrumwiseItemList.TaskList = new List<Backlogitem>();
@@ -129,11 +110,11 @@ namespace QuickAPITest
             {
                 if (backlogitem.tagIDs.Contains(kanbanizeTagId))
                 {
-
+                    scrumwiseItemList.TaskList.Add(backlogitem);
                 }
             }
 
-            return false;
+            return scrumwiseItemList;
         }
 
         private void AddTag(string itemID, string tagID)
