@@ -31,11 +31,12 @@ namespace QuickAPITest
 			string kanbanizeAPIKeyValue = "mMt64VOgJK4pqlSKhnE6XUCoLDCOcbAEoFUtUJjI";
 
 
-			Kanbanize kanbanizeConnection = new Kanbanize(kanbanizeBoardId, kanbanizeLane, kanbanizeAPI, kanbanizeAPIKey, kanbanizeAPIKeyValue);
-			KanbanizeTaskList kanbanizeTaskList = kanbanizeConnection.GetKanbanizeTasks();
-			ScrumwiseItemList scrumwiseItemList = kanbanizeConnection.ConvertKanbasToScrum(kanbanizeTaskList);
+			//Kanbanize kanbanizeConnection = new Kanbanize(kanbanizeBoardId, kanbanizeLane, kanbanizeAPI, kanbanizeAPIKey, kanbanizeAPIKeyValue);
+			//KanbanizeTaskList kanbanizeTaskList = kanbanizeConnection.GetKanbanizeTasks();
+			//ScrumwiseItemList scrumwiseItemList = kanbanizeConnection.ConvertKanbasToScrum(kanbanizeTaskList);
 			//List<ScrumwiseItemList> scrumwiseItemLists = kanbanize.ConvertKanbasToScrum(kanbanizeTaskList);
 			Scrumwise scrumwiseConnection = new Scrumwise(scrumwiseUser, scrumwiseKey, scrumwiseAPI);
+			scrumwiseConnection.GetScrumwiseItems(scrumwiseProjectID);
             scrumwiseConnection.GetKanbanizeItemsInScrumwise(scrumwiseKanbanizeTag, scrumwiseProjectID);
 			//scrumwiseConnection.CreateBacklogItem(scrumwiseItemList.TaskList);
             //scrumwiseConnection.GetKanbanizeItemsInScrumwise(scrumwiseKanbanizeTag);
