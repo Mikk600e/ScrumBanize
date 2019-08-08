@@ -29,7 +29,7 @@ namespace QuickAPITest
         {
             foreach (Backlogitem kanbanTask in kanbanizeTaskList.TaskList)
             {
-                if (scrumwiseItemList.TaskList.Exists(x => x.externalID == kanbanTask.externalID))
+                if (!scrumwiseItemList.TaskList.Exists(x => x.externalID.Equals(kanbanTask.externalID))) // If the Kanbanize task already exists in Scrumwise, don't try to create it again
                 {
                     CreateBacklogItem(kanbanTask);
                 }
