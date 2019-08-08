@@ -27,9 +27,17 @@ namespace QuickAPITest
             string kanbanizeBoardId = "9";
             string kanbanizeLane = "til udvikler";
 
-            Kanbanize kanbanizeTasks = new Kanbanize(kanbanizeBoardId, kanbanizeLane);
+            Kanbanize kanbanize = new Kanbanize(kanbanizeBoardId, kanbanizeLane);
+			KanbanizeTaskList kanbanizeTaskList = kanbanize.GetKanbanizeTasks();
+			ScrumwiseItemList scrumwiseItemList = kanbanize.ConvertKanbasToScrum(kanbanizeTaskList);
+			//List<ScrumwiseItemList> scrumwiseItemLists = kanbanize.ConvertKanbasToScrum(kanbanizeTaskList);
 			Scrumwise scrumwiseConnection = new Scrumwise(scrumwiseUser, scrumwiseKey, scrumwiseAPI);
+<<<<<<< HEAD
             scrumwiseConnection.GetKanbanizeItemsInScrumwise(scrumwiseKanbanizeTag, scrumwiseProjectID);
+=======
+			scrumwiseConnection.CreateBacklogItem(scrumwiseItemList.TaskList);
+            scrumwiseConnection.GetKanbanizeItemsInScrumwise(scrumwiseKanbanizeTag);
+>>>>>>> 16fa864e35f248668fea90356683856561faa2d3
         }
 	}
 }
