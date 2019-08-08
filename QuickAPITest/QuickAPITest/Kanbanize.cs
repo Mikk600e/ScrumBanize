@@ -39,19 +39,19 @@ namespace QuickAPITest
 		public ScrumwiseItemList ConvertKanbasToScrum(KanbanizeTaskList kanbasTask)
 		{
 			ScrumwiseItemList scrumwiseItemList = new ScrumwiseItemList();
-			scrumwiseItemList.TaskList = new List<ScrumwiseItem>();
+			scrumwiseItemList.TaskList = new List<Backlogitem>();
 			for (int i = 0; i < kanbasTask.TaskList.Count; i++)
 			{
 				
-				ScrumwiseItem container = new ScrumwiseItem();
-				container.BacklogListId = "191469-2531-15";
-				container.Description = kanbasTask.TaskList[i].Description;
-				container.ExternalId = kanbasTask.TaskList[i].TaskId;
-				container.Priority = ScrumwisePriority.High;
-				container.ProjectId = "191469-0-5";
-				container.TagIds = new string[1] { "191469-2533-1" };
-				container.Title = kanbasTask.TaskList[i].Title;
-				container.Type = "Bug";
+				Backlogitem container = new Backlogitem();
+				container.backlogListID = "191469-2531-15";
+				container.description = kanbasTask.TaskList[i].Description;
+				container.externalID = kanbasTask.TaskList[i].TaskId;
+				container.priority = ScrumwisePriority.High.ToString();
+				container.projectID = "191469-0-5";
+				container.tagIDs = new string[1] { "191469-2533-1" };
+				container.name = kanbasTask.TaskList[i].Title;
+				container.type = "Bug";
 				scrumwiseItemList.TaskList.Add(container);
 			}
 			

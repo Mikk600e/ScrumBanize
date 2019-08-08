@@ -8,6 +8,6 @@ namespace QuickAPITest.Definitions
 {
     class ScrumwiseItemList
     {
-        public List<ScrumwiseItem> TaskList { get; set; }
+        public List<Backlogitem> TaskList { get; set; }
     }
 }

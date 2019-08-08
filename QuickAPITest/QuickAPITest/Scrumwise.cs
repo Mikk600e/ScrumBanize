@@ -25,7 +25,7 @@ namespace QuickAPITest
             this._apiurl = apiurl;
         }
 
-        public  bool CreateBacklogItem(List<ScrumwiseItem> scrumwiseItem) 
+        public  bool CreateBacklogItem(List<Backlogitem> scrumwiseItem) 
         {
             try
             {
@@ -37,21 +37,39 @@ namespace QuickAPITest
 				{
 					RestRequest req = new RestRequest("addBacklogItem", Method.POST);
 
-					req.AddParameter("projectID", scrumwiseItem[i].ProjectId);
-					req.AddParameter("backlogListID", scrumwiseItem[i].BacklogListId);
-					req.AddParameter("externalID", scrumwiseItem[i].ExternalId);
-					req.AddParameter("type", scrumwiseItem[i].Type);
-					req.AddParameter("name", scrumwiseItem[i].Title);
-					req.AddParameter("description", scrumwiseItem[i].Description);
+					req.AddParameter("projectID", scrumwiseItem[i].projectID);
+					req.AddParameter("backlogListID", scrumwiseItem[i].backlogListID);
+					req.AddParameter("externalID", scrumwiseItem[i].externalID);
+					req.AddParameter("type", scrumwiseItem[i].type);
+					req.AddParameter("name", scrumwiseItem[i].name);
+					req.AddParameter("description", scrumwiseItem[i].description);
 
-					switch (scrumwiseItem[i].Priority)
+                    if (scrumwiseItem[i].priority == ScrumwisePriority.Normal.ToString())
+                    {
+
+                    }
+                    else if (scrumwiseItem[i].priority == ScrumwisePriority.High.ToString())
+                    {
+                        req.AddParameter("priority", "High");
+                    }
+                    else if (scrumwiseItem[i].priority == ScrumwisePriority.Urgent.ToString())
+                    {
+                        req.AddParameter("priority", "Urgent");
+                    }
+                    else
+                    {
+                        throw new Exception("Unknown priority");
+                    }
+
+                    /*switch (scrumwiseItem[i].priority)
 					{
-						case ScrumwisePriority.Normal: break;//no specific priority for this req.AddParameter("priority", "Medi");
-						case ScrumwisePriority.High: req.AddParameter("priority", "High"); break;
-						case ScrumwisePriority.Urgent: req.AddParameter("priority", "Urgent"); break;
+						case ScrumwisePriority.Normal.ToString(): break;//no specific priority for this req.AddParameter("priority", "Medi");
+						case ScrumwisePriority.High.ToString(): req.AddParameter("priority", "High"); break;
+						case ScrumwisePriority.Urgent.ToString(): req.AddParameter("priority", "Urgent"); break;
 						default:
 							throw new Exception("Unknown priority");
-					}
+					}*/
+
 					var createResult = client.Execute<CreateBacklogItemResult>(req);
 
 				}
@@ -96,7 +114,9 @@ namespace QuickAPITest
 
         public bool GetKanbanizeItemsInScrumwise(string kanbanizeTagId, string scrumwiseProjectId)
         {
-            Projects scrumwiseItemList = new Projects();
+            ScrumwiseItemList scrumwiseItemList = new ScrumwiseItemList();
+            scrumwiseItemList.TaskList = new List<Backlogitem>();
+
             RestClient client = new RestClient(_apiurl);
             client.Authenticator = new HttpBasicAuthenticator(_userName, _key);
 
