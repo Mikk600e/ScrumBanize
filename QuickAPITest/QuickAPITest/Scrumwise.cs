@@ -24,42 +24,65 @@ namespace QuickAPITest
             this._apiurl = apiurl;
         }
 
-        public bool CreateBacklogItem(ScrumwiseItem scrumwiseItem) 
+        public  bool CreateBacklogItem(List<ScrumwiseItem> scrumwiseItem) 
         {
             try
             {
+				
                 RestClient client = new RestClient(_apiurl);
                 client.Authenticator = new HttpBasicAuthenticator(_userName, _key);
+                //RestRequest req = new RestRequest("addBacklogItem", Method.POST);
+				for (int i = 0; i < scrumwiseItem.Count; i++)
+				{
+					RestRequest req = new RestRequest("addBacklogItem", Method.POST);
 
-                RestRequest req = new RestRequest("addBacklogItem", Method.POST);
-                req.AddParameter("projectID", scrumwiseItem.ProjectId);
-                req.AddParameter("backlogListID", scrumwiseItem.BacklogListId);
-                req.AddParameter("externalID", scrumwiseItem.ExternalId);
-                req.AddParameter("type", scrumwiseItem.Type);
-                req.AddParameter("name", scrumwiseItem.Title);
-                req.AddParameter("description", scrumwiseItem.Description);
-                switch (scrumwiseItem.Priority)
-                {
-                    case ScrumwisePriority.Normal: break;//no specific priority for this req.AddParameter("priority", "Medi");
-                    case ScrumwisePriority.High: req.AddParameter("priority", "High"); break;
-                    case ScrumwisePriority.Urgent: req.AddParameter("priority", "Urgent"); break;
-                    default:
-                        throw new Exception("Unknown priority");
-                }
+					req.AddParameter("projectID", scrumwiseItem[i].ProjectId);
+					req.AddParameter("backlogListID", scrumwiseItem[i].BacklogListId);
+					req.AddParameter("externalID", scrumwiseItem[i].ExternalId);
+					req.AddParameter("type", scrumwiseItem[i].Type);
+					req.AddParameter("name", scrumwiseItem[i].Title);
+					req.AddParameter("description", scrumwiseItem[i].Description);
 
-                var createResult = client.Execute<CreateBacklogItemResult>(req);
+					switch (scrumwiseItem[i].Priority)
+					{
+						case ScrumwisePriority.Normal: break;//no specific priority for this req.AddParameter("priority", "Medi");
+						case ScrumwisePriority.High: req.AddParameter("priority", "High"); break;
+						case ScrumwisePriority.Urgent: req.AddParameter("priority", "Urgent"); break;
+						default:
+							throw new Exception("Unknown priority");
+					}
+					var createResult = client.Execute<CreateBacklogItemResult>(req);
 
-                if (createResult.IsSuccessful)
-                {
-                    string itemID = createResult.Data.Result;
-                    scrumwiseItem.ItemId = itemID;
-                    foreach (var tagID in scrumwiseItem.TagIds)
-                    {
-                        AddTag(itemID, tagID);
-                    }
+				}
+				//req.AddParameter("projectID", scrumwiseItem[i].ProjectId);
+				//req.AddParameter("backlogListID", scrumwiseItem.BacklogListId);
+				//req.AddParameter("externalID", scrumwiseItem.ExternalId);
+				//req.AddParameter("type", scrumwiseItem.Type);
+				//req.AddParameter("name", scrumwiseItem.Title);
+				//req.AddParameter("description", scrumwiseItem.Description);
 
-                    return true;
-                }
+				//switch (scrumwiseItem.Priority)
+				//{
+				//    case ScrumwisePriority.Normal: break;//no specific priority for this req.AddParameter("priority", "Medi");
+				//    case ScrumwisePriority.High: req.AddParameter("priority", "High"); break;
+				//    case ScrumwisePriority.Urgent: req.AddParameter("priority", "Urgent"); break;
+				//    default:
+				//        throw new Exception("Unknown priority");
+				//}
+
+				//var createResult = client.Execute<CreateBacklogItemResult>(req);
+
+                //if (createResult.IsSuccessful)
+                //{
+                //    string itemID = createResult.Data.Result;
+                //    scrumwiseItem.ItemId = itemID;
+                //    foreach (var tagID in scrumwiseItem.TagIds)
+                //    {
+                //        AddTag(itemID, tagID);
+                //    }
+
+                //    return true;
+                //}
             }
             catch (Exception)
             {
