@@ -26,8 +26,12 @@ namespace QuickAPITest
             string scrumwiseProjectID = "191469-0-5";
             string kanbanizeBoardId = "9";
             string kanbanizeLane = "til udvikler";
+			string kanbanizeAPI = "https://freeway.kanbanize.com/index.php/api/kanbanize";
+			string kanbanizeAPIKey = "apikey";
+			string kanbanizeAPIKeyValue = "mMt64VOgJK4pqlSKhnE6XUCoLDCOcbAEoFUtUJjI";
 
-            Kanbanize kanbanizeConnection = new Kanbanize(kanbanizeBoardId, kanbanizeLane);
+
+			Kanbanize kanbanizeConnection = new Kanbanize(kanbanizeBoardId, kanbanizeLane, kanbanizeAPI, kanbanizeAPIKey, kanbanizeAPIKeyValue);
 			KanbanizeTaskList kanbanizeTaskList = kanbanizeConnection.GetKanbanizeTasks();
 			ScrumwiseItemList scrumwiseItemList = kanbanizeConnection.ConvertKanbasToScrum(kanbanizeTaskList);
 			//List<ScrumwiseItemList> scrumwiseItemLists = kanbanize.ConvertKanbasToScrum(kanbanizeTaskList);
