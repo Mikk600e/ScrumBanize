@@ -19,8 +19,8 @@ namespace QuickAPITest
 			
 			this._boardID = boardID;
 			this._lane = lane;
-			KanbanizeTaskList items = GetKanbanizeTasks(boardID, lane);
-			List<ScrumwiseItem> scrumwiseTask = ConvertKanbasToScrum(items);
+			KanbanizeTaskList items = GetKanbanizeTasks();
+			ScrumwiseItemList scrumwiseTask = ConvertKanbasToScrum(items);
 			//methodSlave.CreateBacklogItem(scrumwiseTask);
 		}
 		public KanbanizeTaskList GetKanbanizeTasks()
