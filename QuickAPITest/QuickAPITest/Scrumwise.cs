@@ -32,7 +32,6 @@ namespace QuickAPITest
 				
                 RestClient client = new RestClient(_apiurl);
                 client.Authenticator = new HttpBasicAuthenticator(_userName, _key);
-                //RestRequest req = new RestRequest("addBacklogItem", Method.POST);
 				for (int i = 0; i < scrumwiseItem.Count; i++)
 				{
 					RestRequest req = new RestRequest("addBacklogItem", Method.POST);
@@ -125,15 +124,15 @@ namespace QuickAPITest
             request.AddParameter("includeProperties", "Project.backlogItems,BacklogItem.tasks");
             var response = client.Post(request);
             Rootobject test = SimpleJson.DeserializeObject<Rootobject>(response.Content);
-            //foreach(Backlogitem backlogitem in test.result.projects[0].backlogItems)
-            //{
-            //    if (backlogitem.tagIDs.Contains(kanbanizeTagId))
-            //    {
+			foreach (Backlogitem backlogitem in test.result.projects[0].backlogItems)
+			{
+				if (backlogitem.tagIDs.Contains(kanbanizeTagId))
+				{
 
-            //    }
-            //}
+				}
+			}
 
-            return false;
+			return false;
         }
 
         private void AddTag(string itemID, string tagID)
