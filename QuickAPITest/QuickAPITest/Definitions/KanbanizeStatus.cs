@@ -10,7 +10,7 @@ namespace QuickAPITest.Definitions
 		[Description("In Progress")]
 		igang = 2,
 		[Description("Done")]
-		done_96 = 3,
+		done = 3,
 
 	}
 }

@@ -18,12 +18,14 @@ namespace QuickAPITest
 
 		public Kanbanize(string boardID, string lane, string apiurl, string apiKey, string apiKeyValue)
 		{
-			
+
 			this._boardID = boardID;
 			this._lane = lane;
 			this._apiurl = apiurl;
 			this._apiKey = apiKey;
 			this._apiKeyValue = apiKeyValue;
+
+
 		}
 		public KanbanizeTaskList GetKanbanizeTasks()
 		{
@@ -36,6 +38,7 @@ namespace QuickAPITest
 			var xmlDeserializer = new RestSharp.Deserializers.XmlDeserializer();
 			return kanbanizeTasks = xmlDeserializer.Deserialize<KanbanizeTaskList>(response);
 		}
+
 		public ScrumwiseItemList ConvertKanbasToScrum(KanbanizeTaskList kanbasTask)
 		{
 			ScrumwiseItemList scrumwiseItemList = new ScrumwiseItemList();
@@ -57,43 +60,92 @@ namespace QuickAPITest
 
 			return scrumwiseItemList;
 		}
-		// TODO lav foreach for hver dimmer i tingen
-		public bool CreateKanbanizeTask(ScrumwiseItemList scrumwiseItemList)
+		public bool CreateKanbanizeTasks(ScrumwiseItemList scrumwiseItemList)
+		{
+			try
+			{
+				for (int i = 0; i < scrumwiseItemList.TaskList.Count; i++)
+				{
+					CreateKanbanizeTask(scrumwiseItemList.TaskList[i]);
+				}
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
+				throw;
+			}
+			
+		}
+		private bool CreateKanbanizeTask(Backlogitem backlogitem)
 		{
 			RestClient client = new RestClient(_apiurl);
 			RestRequest request = new RestRequest("create_new_task", Method.POST);
-			scrumwiseItemList = VariableFitter(scrumwiseItemList);
+			backlogitem = VariableFitter(backlogitem);
 			request.AddHeader(_apiKey, _apiKeyValue);
 			request.AddJsonBody(new
 			{
 				boardid = _boardID,
-				column = scrumwiseItemList.TaskList[0].status,
+				column = backlogitem.status,
 				lane = _lane,
-				priority = scrumwiseItemList.TaskList[0].priority,
-				type = scrumwiseItemList.TaskList[0].type,
-				title = scrumwiseItemList.TaskList[0].name,
-				description = scrumwiseItemList.TaskList[0].description
+				priority = backlogitem.priority,
+				type = backlogitem.type,
+				title = backlogitem.name,
+				description = backlogitem.description
 			});
 			var response = client.Post(request);
 			return true;
 		}
-		public ScrumwiseItemList VariableFitter(ScrumwiseItemList scrumwiseItemList)
+		private Backlogitem VariableFitter(Backlogitem backlogitem)
 		{
-			for (int i = 0; i < scrumwiseItemList.TaskList.Count; i++)
+			switch (backlogitem.status)
 			{
-				switch (scrumwiseItemList.TaskList[i].status)
-				{
-					case "To do":
-						scrumwiseItemList.TaskList[i].status = KanbanizeStatus.planlagt.ToString();
-						break;
-					case "In progress":
-						scrumwiseItemList.TaskList[i].status = KanbanizeStatus.igang.ToString().Insert(1," ");
-						break;
-					case "Done":
-						break;
-				}
+				case "To do":
+					backlogitem.status = KanbanizeStatus.planlagt.ToString();
+					break;
+				case "In progress":
+					backlogitem.status = KanbanizeStatus.igang.ToString().Insert(1, " ");
+					break;
+				case "Done":
+					backlogitem.status = KanbanizeStatus.done.ToString();
+					break;
+				case "New":
+					backlogitem.status = KanbanizeStatus.planlagt.ToString();
+					break;
 			}
-			return scrumwiseItemList;
+
+			return backlogitem;
+		}
+		public bool KanbanizeMoveTasks(ScrumwiseItemList scrumwiseItemList)
+		{
+			try
+			{
+				for (int i = 0; i < scrumwiseItemList.TaskList.Count; i++)
+				{
+					KanbanizeMoveTask(scrumwiseItemList.TaskList[i]);
+				}
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
+				throw;
+			}
+		}
+		private bool KanbanizeMoveTask(Backlogitem backlogitem)
+		{
+			RestClient client = new RestClient(_apiurl);
+			RestRequest request = new RestRequest("move_task", Method.POST);
+			VariableFitter(backlogitem);
+			request.AddHeader(_apiKey, _apiKeyValue);
+			request.AddJsonBody(new
+			{
+				boardid = _boardID,
+				taskid = backlogitem.externalID,
+				column = backlogitem.status
+			});
+			var response = client.Post(request);
+			return false;
 		}
 	}
 }
