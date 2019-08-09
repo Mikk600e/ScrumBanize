@@ -39,9 +39,10 @@ namespace QuickAPITest
                 else
                 {
                     Backlogitem scrumwiseItem = scrumwiseItemList.TaskList.Find(x => x.externalID.Equals(kanbanTask.externalID));
-                    if (kanbanTask.status == "Done")
+                    if (kanbanTask.status == KanbanizeStatus.done.ToString())
                     {
-
+						Console.WriteLine("Foo");
+						Console.ReadKey();
                     }
                 }
             }
@@ -64,10 +65,13 @@ namespace QuickAPITest
 				req.AddParameter("name", scrumwiseItem.name);
 				req.AddParameter("description", scrumwiseItem.description);
 
-
-				if (scrumwiseItem.priority == ScrumwisePriority.Normal.ToString())
+				if (scrumwiseItem.priority == ScrumwisePriority.Low.ToString())
+				{
+					req.AddParameter("priority", "Low");
+				}
+				else if (scrumwiseItem.priority == ScrumwisePriority.Medium.ToString())
                 {
-
+					req.AddParameter("priority", "Medium");
                 }
                 else if (scrumwiseItem.priority == ScrumwisePriority.High.ToString())
                 {

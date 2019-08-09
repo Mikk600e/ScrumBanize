@@ -39,6 +39,11 @@ namespace QuickAPITest
             scrumwiseConnection.ImportKanbanizeToScrumwise(kanbanizeConnection.ConvertKanbasToScrum(kanbanizeConnection.GetKanbanizeTasks()), scrumwiseConnection.GetKanbanizeItemsInScrumwise(scrumwiseKanbanizeTag, scrumwiseProjectID));
             //kanbanizeConnection.CreateKanbanizeTasks(scrumwiseConnection.GetKanbanizeItemsInScrumwise(scrumwiseKanbanizeTag, scrumwiseProjectID));
 
+=======
+			//kanbanizeConnection.KanbanizeMoveTasks(scrumwiseConnection.GetKanbanizeItemsInScrumwise(scrumwiseKanbanizeTag,scrumwiseProjectID));
+			//kanbanizeConnection.CreateKanbanizeTasks(scrumwiseConnection.GetKanbanizeItemsInScrumwise(scrumwiseKanbanizeTag, scrumwiseProjectID));
+			scrumwiseConnection.ImportKanbanizeToScrumwise(kanbanizeConnection.ConvertKanbasToScrum(kanbanizeConnection.GetKanbanizeTasks()),scrumwiseConnection.GetKanbanizeItemsInScrumwise(scrumwiseKanbanizeTag, scrumwiseProjectID));
+>>>>>>> MikkelDenRigtige
 		}
     }
 }

@@ -50,11 +50,14 @@ namespace QuickAPITest
 				container.backlogListID = "191469-2531-15";
 				container.description = kanbasTask.TaskList[i].Description;
 				container.externalID = kanbasTask.TaskList[i].TaskId;
-				container.priority = ScrumwisePriority.High.ToString();
+				//tving container ind i variable fitter 
+				container.priority = kanbasTask.TaskList[i].Priority;
 				container.projectID = "191469-0-5";
 				container.tagIDs = new string[1] { "191469-2533-1" };
 				container.name = kanbasTask.TaskList[i].Title;
 				container.type = "Bug";
+				container.status = kanbasTask.TaskList[i].Columnname.ToLower();
+				container = VariableFitter(container);
 				scrumwiseItemList.TaskList.Add(container);
 			}
 
@@ -111,6 +114,21 @@ namespace QuickAPITest
 					break;
 				case "New":
 					backlogitem.status = KanbanizeStatus.planlagt.ToString();
+					break;
+			}
+			switch (backlogitem.priority)
+			{
+				case "Low":
+					backlogitem.priority = ScrumwisePriority.Low.ToString();
+					break;
+				case "Average":
+					backlogitem.priority = ScrumwisePriority.Medium.ToString();
+					break;
+				case "High":
+					backlogitem.priority = ScrumwisePriority.High.ToString();
+					break;
+				case "Urgent":
+					backlogitem.priority = ScrumwisePriority.Urgent.ToString();
 					break;
 			}
 
