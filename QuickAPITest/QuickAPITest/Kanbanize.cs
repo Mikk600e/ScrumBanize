@@ -24,13 +24,12 @@ namespace QuickAPITest
 			this._apiurl = apiurl;
 			this._apiKey = apiKey;
 			this._apiKeyValue = apiKeyValue;
-			GetKanbanizeTasks();
 		}
 		public KanbanizeTaskList GetKanbanizeTasks()
 		{
 			KanbanizeTaskList kanbanizeTasks = new KanbanizeTaskList();
-			var client = new RestClient(_apiurl);
-			var request = new RestRequest("/get_all_tasks", Method.POST);
+			RestClient client = new RestClient(_apiurl);
+			RestRequest request = new RestRequest("/get_all_tasks", Method.POST);
 			request.AddHeader(_apiKey, _apiKeyValue);
 			request.AddJsonBody(new { boardid = _boardID, lane = _lane });
 			var response = client.Post(request);
@@ -43,7 +42,7 @@ namespace QuickAPITest
 			scrumwiseItemList.TaskList = new List<Backlogitem>();
 			for (int i = 0; i < kanbasTask.TaskList.Count; i++)
 			{
-				
+
 				Backlogitem container = new Backlogitem();
 				container.backlogListID = "191469-2531-15";
 				container.description = kanbasTask.TaskList[i].Description;
@@ -55,14 +54,46 @@ namespace QuickAPITest
 				container.type = "Bug";
 				scrumwiseItemList.TaskList.Add(container);
 			}
-			
+
 			return scrumwiseItemList;
 		}
-		public bool CreateKanbanizeTask()
+		// TODO lav foreach for hver dimmer i tingen
+		public bool CreateKanbanizeTask(ScrumwiseItemList scrumwiseItemList)
 		{
-			RestRequest client = new RestRequest(_apiurl);
-
+			RestClient client = new RestClient(_apiurl);
+			RestRequest request = new RestRequest("create_new_task", Method.POST);
+			scrumwiseItemList = VariableFitter(scrumwiseItemList);
+			request.AddHeader(_apiKey, _apiKeyValue);
+			request.AddJsonBody(new
+			{
+				boardid = _boardID,
+				column = scrumwiseItemList.TaskList[0].status,
+				lane = _lane,
+				priority = scrumwiseItemList.TaskList[0].priority,
+				type = scrumwiseItemList.TaskList[0].type,
+				title = scrumwiseItemList.TaskList[0].name,
+				description = scrumwiseItemList.TaskList[0].description
+			});
+			var response = client.Post(request);
 			return true;
+		}
+		public ScrumwiseItemList VariableFitter(ScrumwiseItemList scrumwiseItemList)
+		{
+			for (int i = 0; i < scrumwiseItemList.TaskList.Count; i++)
+			{
+				switch (scrumwiseItemList.TaskList[i].status)
+				{
+					case "To do":
+						scrumwiseItemList.TaskList[i].status = KanbanizeStatus.planlagt.ToString();
+						break;
+					case "In progress":
+						scrumwiseItemList.TaskList[i].status = KanbanizeStatus.igang.ToString().Insert(1," ");
+						break;
+					case "Done":
+						break;
+				}
+			}
+			return scrumwiseItemList;
 		}
 	}
 }

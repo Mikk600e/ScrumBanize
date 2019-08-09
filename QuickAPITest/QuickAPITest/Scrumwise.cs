@@ -53,7 +53,8 @@ namespace QuickAPITest
 				req.AddParameter("name", scrumwiseItem.name);
 				req.AddParameter("description", scrumwiseItem.description);
 
-                if (scrumwiseItem.priority == ScrumwisePriority.Normal.ToString())
+
+				if (scrumwiseItem.priority == ScrumwisePriority.Normal.ToString())
                 {
 
                 }
