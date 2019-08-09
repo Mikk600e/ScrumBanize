@@ -18,7 +18,7 @@ namespace QuickAPITest
         private string _userName;
         private string _key;
 
-        public Scrumwise(string userName, string key, string apiurl) // apiurl: https://api.scrumwise.com/service/api/v1/
+        public Scrumwise(string userName, string key, string apiurl) 
         {
             this._userName = userName;
             this._key = key;
