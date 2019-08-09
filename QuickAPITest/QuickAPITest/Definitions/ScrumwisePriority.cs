@@ -4,11 +4,13 @@ namespace QuickAPITest.Definitions
 {
     public enum ScrumwisePriority
     {
+		[Description("Lille")]
+		Low = 1,
         [Description("Normal")]
-        Normal = 1,
+        Medium = 2,
         [Description("Høj")]
-        High = 2,
+        High = 3,
         [Description("Kritisk")]
-        Urgent = 3
+        Urgent = 4
     }
 }
