@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Configuration;
 using QuickAPITest.Definitions;
 using RestSharp;
 using RestSharp.Authenticators;
@@ -19,19 +20,20 @@ namespace QuickAPITest
 
         static void Main(string[] args)
 		{
-            string scrumwiseUser = "niels@freeway.dk";
-            string scrumwiseKey = "591D5EAF2868B8B0531D9B0BF03A017AE3F87BFFDF6A4919FC375CB6229B7351";
-            string scrumwiseAPI = "https://api.scrumwise.com/service/api/v1/";
-            string scrumwiseKanbanizeTag = "191469-2533-1";
-            string scrumwiseProjectID = "191469-0-5";
-            string kanbanizeBoardId = "9";
-            string kanbanizeLane = "til udvikler";
-			string kanbanizeAPI = "https://freeway.kanbanize.com/index.php/api/kanbanize";
-			string kanbanizeAPIKey = "apikey";
-			string kanbanizeAPIKeyValue = "mMt64VOgJK4pqlSKhnE6XUCoLDCOcbAEoFUtUJjI";
+            //ConfigurationManager.
+            string scrumwiseUser = ConfigurationManager.AppSettings.Get("scrumwiseUser");//"niels@freeway.dk";
+            string scrumwiseKey = ConfigurationManager.AppSettings["scrumwiseKey"]; //"591D5EAF2868B8B0531D9B0BF03A017AE3F87BFFDF6A4919FC375CB6229B7351";
+            string scrumwiseAPI = ConfigurationManager.AppSettings["scrumwiseAPI"]; //"https://api.scrumwise.com/service/api/v1/";
+            string scrumwiseKanbanizeTag = ConfigurationManager.AppSettings["scrumwiseKanbanizeTag"]; //"191469-2533-1";
+            string scrumwiseProjectID = ConfigurationManager.AppSettings["scrumwiseProjectID"]; //"191469-0-5";
+            string kanbanizeBoardId = ConfigurationManager.AppSettings["kanbanizeBoardID"]; //"9";
+            string kanbanizeLane = ConfigurationManager.AppSettings["kanbanizeLane"]; //"til udvikler";
+            string kanbanizeAPI = ConfigurationManager.AppSettings["kanbanizeAPI"]; //"https://freeway.kanbanize.com/index.php/api/kanbanize";
+            string kanbanizeAPIKey = ConfigurationManager.AppSettings["kanbanizeAPIKey"]; //"apikey";
+            string kanbanizeAPIKeyValue = ConfigurationManager.AppSettings["kanbanizeAPIKeyValue"]; //"mMt64VOgJK4pqlSKhnE6XUCoLDCOcbAEoFUtUJjI";
 
 
-			Kanbanize kanbanizeConnection = new Kanbanize(kanbanizeBoardId, kanbanizeLane, kanbanizeAPI, kanbanizeAPIKey, kanbanizeAPIKeyValue);
+            Kanbanize kanbanizeConnection = new Kanbanize(kanbanizeBoardId, kanbanizeLane, kanbanizeAPI, kanbanizeAPIKey, kanbanizeAPIKeyValue);
 
 			KanbanizeTaskList kanbanizeTaskList = kanbanizeConnection.GetKanbanizeTasks();
 			ScrumwiseItemList convertedkanbanizeTaskList = kanbanizeConnection.ConvertKanbasToScrum(kanbanizeTaskList);
