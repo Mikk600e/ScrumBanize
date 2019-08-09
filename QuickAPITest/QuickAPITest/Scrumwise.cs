@@ -31,10 +31,21 @@ namespace QuickAPITest
             {
                 if (!scrumwiseItemList.TaskList.Exists(x => x.externalID.Equals(kanbanTask.externalID))) // If the Kanbanize task already exists in Scrumwise, don't try to create it again
                 {
-                    CreateBacklogItem(kanbanTask);
+                    if (!CreateBacklogItem(kanbanTask))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    Backlogitem scrumwiseItem = scrumwiseItemList.TaskList.Find(x => x.externalID.Equals(kanbanTask.externalID));
+                    if (kanbanTask.status == "Done")
+                    {
+
+                    }
                 }
             }
-            return false;
+            return true;
         }
 
         public  bool CreateBacklogItem(Backlogitem scrumwiseItem) 
