@@ -2,6 +2,7 @@
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,15 +16,20 @@ namespace QuickAPITest
 		private string _apiurl;
 		private string _apiKey;
 		private string _apiKeyValue;
+		private string _backlogListID;
+		private string[] _scrumwiseKanbanizeTag;
 
-		public Kanbanize(string boardID, string lane, string apiurl, string apiKey, string apiKeyValue)
+		public Kanbanize()
 		{
 
-			this._boardID = boardID;
-			this._lane = lane;
-			this._apiurl = apiurl;
-			this._apiKey = apiKey;
-			this._apiKeyValue = apiKeyValue;
+			this._boardID = ConfigurationManager.AppSettings["kanbanizeBoardID"];
+			this._lane = ConfigurationManager.AppSettings["kanbanizeLane"];
+			this._apiurl = ConfigurationManager.AppSettings["kanbanizeAPI"];
+			this._apiKey = ConfigurationManager.AppSettings["kanbanizeAPIKey"];
+			this._apiKeyValue = ConfigurationManager.AppSettings["kanbanizeAPIKeyValue"];
+			this._backlogListID = ConfigurationManager.AppSettings["scrumwiseBacklogListID"];
+			this._scrumwiseKanbanizeTag = new string[1] { ConfigurationManager.AppSettings["scrumwiseKanbanizeTag"] };
+
 
 
 		}
@@ -47,13 +53,12 @@ namespace QuickAPITest
 			{
 
 				Backlogitem container = new Backlogitem();
-				container.backlogListID = "191469-2531-15";
+				container.backlogListID = _backlogListID;
 				container.description = kanbasTask.TaskList[i].Description;
 				container.externalID = kanbasTask.TaskList[i].TaskId;
-				//tving container ind i variable fitter 
 				container.priority = kanbasTask.TaskList[i].Priority;
-				container.projectID = "191469-0-5";
-				container.tagIDs = new string[1] { "191469-2533-1" };
+				container.projectID = ConfigurationManager.AppSettings[""];
+				container.tagIDs = _scrumwiseKanbanizeTag;
 				container.name = kanbasTask.TaskList[i].Title;
 				container.type = "Bug";
 				container.status = kanbasTask.TaskList[i].Columnname.ToLower();
