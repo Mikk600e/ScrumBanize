@@ -3,6 +3,7 @@ using RestSharp;
 using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,12 +18,16 @@ namespace QuickAPITest
         private string _apiurl;
         private string _userName;
         private string _key;
+        private string _kanbanizeTagID;
+        private string _projectID;
 
-        public Scrumwise(string userName, string key, string apiurl) 
+        public Scrumwise() 
         {
-            this._userName = userName;
-            this._key = key;
-            this._apiurl = apiurl;
+            this._userName = ConfigurationManager.AppSettings.Get("scrumwiseUser"); ;
+            this._key = ConfigurationManager.AppSettings["scrumwiseKey"];
+            this._apiurl = ConfigurationManager.AppSettings["scrumwiseAPI"];
+            this._kanbanizeTagID = ConfigurationManager.AppSettings["scrumwiseKanbanizeTag"];
+            this._projectID = ConfigurationManager.AppSettings["scrumwiseProjectID"];
         }
 
         public bool ImportKanbanizeToScrumwise(ScrumwiseItemList kanbanizeTaskList, ScrumwiseItemList scrumwiseItemList)
@@ -34,15 +39,6 @@ namespace QuickAPITest
                     if (!CreateBacklogItem(kanbanTask))
                     {
                         return false;
-                    }
-                }
-                else
-                {
-                    Backlogitem scrumwiseItem = scrumwiseItemList.TaskList.Find(x => x.externalID.Equals(kanbanTask.externalID));
-                    if (kanbanTask.status == KanbanizeStatus.done.ToString())
-                    {
-						Console.WriteLine("Foo");
-						Console.ReadKey();
                     }
                 }
             }
@@ -109,14 +105,14 @@ namespace QuickAPITest
             return false;
         }
 
-        public ScrumwiseItemList GetKanbanizeItemsInScrumwise(string kanbanizeTagId, string scrumwiseProjectId)
+        public ScrumwiseItemList GetKanbanizeItemsInScrumwise()
         {
             ScrumwiseItemList scrumwiseItemList = new ScrumwiseItemList();
             scrumwiseItemList.TaskList = new List<Backlogitem>();
-			Rootobject test = GetScrumwiseItems(scrumwiseProjectId);
+			Rootobject test = GetScrumwiseItems();
 			foreach (Backlogitem backlogitem in test.result.projects[0].backlogItems)
             {
-                if (backlogitem.tagIDs.Contains(kanbanizeTagId))
+                if (backlogitem.tagIDs.Contains(_kanbanizeTagID))
                 {
                     scrumwiseItemList.TaskList.Add(backlogitem);
                 }
@@ -124,12 +120,12 @@ namespace QuickAPITest
 
             return scrumwiseItemList;
         }
-		public Rootobject GetScrumwiseItems(string scrumwiseProjectId)
+		public Rootobject GetScrumwiseItems()
 		{
 			RestClient client = new RestClient(_apiurl);
 			client.Authenticator = new HttpBasicAuthenticator(_userName, _key);
 			RestRequest request = new RestRequest("getData", Method.POST);
-			request.AddParameter("projectIDs", scrumwiseProjectId);
+			request.AddParameter("projectIDs", _projectID);
 			request.AddParameter("includeProperties", "Project.backlogItems,BacklogItem.tasks");
 			var response = client.Post(request);
 			return SimpleJson.DeserializeObject<Rootobject>(response.Content);
