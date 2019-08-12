@@ -16,8 +16,10 @@ namespace QuickAPITest
 		private string _apiurl;
 		private string _apiKey;
 		private string _apiKeyValue;
-		private string _backlogListID;
-		private string[] _scrumwiseKanbanizeTag;
+        private string _backlogListID;
+        private string _projectID;
+        private string _type;
+        private string[] _scrumwiseKanbanizeTag;
 
 		public Kanbanize()
 		{
@@ -28,8 +30,9 @@ namespace QuickAPITest
 			this._apiKey = ConfigurationManager.AppSettings["kanbanizeAPIKey"];
 			this._apiKeyValue = ConfigurationManager.AppSettings["kanbanizeAPIKeyValue"];
 			this._backlogListID = ConfigurationManager.AppSettings["scrumwiseBacklogListID"];
-			this._scrumwiseKanbanizeTag = new string[1] { ConfigurationManager.AppSettings["scrumwiseKanbanizeTag"] };
-
+            this._projectID = ConfigurationManager.AppSettings["scrumwiseProjectID"];
+            this._scrumwiseKanbanizeTag = new string[1] { ConfigurationManager.AppSettings["scrumwiseKanbanizeTag"] };
+            this._type = "Bug";
 
 
 		}
@@ -57,10 +60,10 @@ namespace QuickAPITest
 				container.description = kanbasTask.TaskList[i].Description;
 				container.externalID = kanbasTask.TaskList[i].TaskId;
 				container.priority = kanbasTask.TaskList[i].Priority;
-				container.projectID = ConfigurationManager.AppSettings[""];
+				container.projectID = _projectID;
 				container.tagIDs = _scrumwiseKanbanizeTag;
 				container.name = kanbasTask.TaskList[i].Title;
-				container.type = "Bug";
+				container.type = _type;
 				container.status = kanbasTask.TaskList[i].Columnname.ToLower();
 				container = VariableFitter(container);
 				scrumwiseItemList.TaskList.Add(container);
@@ -68,14 +71,17 @@ namespace QuickAPITest
 
 			return scrumwiseItemList;
 		}
-		public bool CreateKanbanizeTasks(ScrumwiseItemList scrumwiseItemList)
+		public bool CreateKanbanizeTasks(ScrumwiseItemList kanbanizeTaskList , ScrumwiseItemList scrumwiseItemList)
 		{
 			try
 			{
 				for (int i = 0; i < scrumwiseItemList.TaskList.Count; i++)
 				{
-					CreateKanbanizeTask(scrumwiseItemList.TaskList[i]);
-				}
+                    if (!scrumwiseItemList.TaskList.Exists(x => x.externalID.Equals(kanbanizeTaskList.TaskList[i].externalID)))
+                    {
+                        CreateKanbanizeTask(scrumwiseItemList.TaskList[i]);
+                    }
+                }
 				return true;
 			}
 			catch (Exception)
