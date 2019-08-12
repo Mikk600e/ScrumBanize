@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace QuickAPITest
 {
-	class Kanbanize
+	public class Kanbanize
 	{
 		private string _boardID;
 		private string _lane;
@@ -21,17 +21,19 @@ namespace QuickAPITest
         private string _type;
         private string[] _scrumwiseKanbanizeTag;
 
-		public Kanbanize(string kanbanizeBoardID, string kanbanizeLane, string scrumwiseBacklogListID, string scrumwiseProjectID)
+		public Kanbanize(string kanbanizeBoardID, string kanbanizeLane, string scrumwiseBacklogListID, 
+            string scrumwiseProjectID, string kanbanizeAPI, string kanbanizeAPIKey, string kanbanizeAPIKeyValue, string scrumwiseKanbanizeTag)
 		{
 
-			this._boardID = ConfigurationManager.AppSettings["kanbanizeBoardID"];
-			this._lane = ConfigurationManager.AppSettings["kanbanizeLane"];
-            this._backlogListID = ConfigurationManager.AppSettings["scrumwiseBacklogListID"];
-            this._projectID = ConfigurationManager.AppSettings["scrumwiseProjectID"];
-            this._apiurl = ConfigurationManager.AppSettings["kanbanizeAPI"];
-			this._apiKey = ConfigurationManager.AppSettings["kanbanizeAPIKey"];
-			this._apiKeyValue = ConfigurationManager.AppSettings["kanbanizeAPIKeyValue"];
-			this._scrumwiseKanbanizeTag = new string[1] { ConfigurationManager.AppSettings["scrumwiseKanbanizeTag"] };
+			this._boardID = kanbanizeBoardID;
+			this._lane = kanbanizeLane;
+            this._backlogListID = scrumwiseBacklogListID;
+            this._projectID = scrumwiseProjectID;
+
+            this._apiurl = kanbanizeAPI;
+			this._apiKey = kanbanizeAPIKey;
+			this._apiKeyValue = kanbanizeAPIKeyValue;
+			this._scrumwiseKanbanizeTag = new string[1] { scrumwiseKanbanizeTag };
             this._type = "Bug";
 
 

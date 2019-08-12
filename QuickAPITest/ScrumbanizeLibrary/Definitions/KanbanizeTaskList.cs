@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace QuickAPITest.Definitions
 {
-    class ScrumwiseItemList
-    {
-        public List<Backlogitem> TaskList { get; set; }
-    }
+	public class KanbanizeTaskList
+	{
+		public List<Item> TaskList { get; set; }
+	}
 }

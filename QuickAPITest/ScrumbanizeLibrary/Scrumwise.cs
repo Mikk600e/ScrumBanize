@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace QuickAPITest
 {
     
-    class Scrumwise
+    public class Scrumwise
     {
 
         private string _apiurl;
@@ -21,12 +21,12 @@ namespace QuickAPITest
         private string _kanbanizeTagID;
         private string _projectID;
 
-        public Scrumwise(string scrumwiseProjectID) 
+        public Scrumwise(string scrumwiseProjectID, string scrumwiseUser, string scrumwiseKey, string scrumwiseAPI, string scrumwiseKanbanizeTag) 
         {
-            this._userName = ConfigurationManager.AppSettings.Get("scrumwiseUser"); ;
-            this._key = ConfigurationManager.AppSettings["scrumwiseKey"];
-            this._apiurl = ConfigurationManager.AppSettings["scrumwiseAPI"];
-            this._kanbanizeTagID = ConfigurationManager.AppSettings["scrumwiseKanbanizeTag"];
+            this._userName = scrumwiseUser;
+            this._key = scrumwiseKey;
+            this._apiurl = scrumwiseAPI;
+            this._kanbanizeTagID = scrumwiseKanbanizeTag;
             this._projectID = scrumwiseProjectID;
         }
 
