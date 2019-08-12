@@ -21,13 +21,13 @@ namespace QuickAPITest
         private string _kanbanizeTagID;
         private string _projectID;
 
-        public Scrumwise() 
+        public Scrumwise(string scrumwiseProjectID) 
         {
             this._userName = ConfigurationManager.AppSettings.Get("scrumwiseUser"); ;
             this._key = ConfigurationManager.AppSettings["scrumwiseKey"];
             this._apiurl = ConfigurationManager.AppSettings["scrumwiseAPI"];
             this._kanbanizeTagID = ConfigurationManager.AppSettings["scrumwiseKanbanizeTag"];
-            this._projectID = ConfigurationManager.AppSettings["scrumwiseProjectID"];
+            this._projectID = scrumwiseProjectID;
         }
 
         public bool ImportKanbanizeToScrumwise(ScrumwiseItemList kanbanizeTaskList, ScrumwiseItemList scrumwiseItemList)

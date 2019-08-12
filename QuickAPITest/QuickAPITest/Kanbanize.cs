@@ -21,17 +21,17 @@ namespace QuickAPITest
         private string _type;
         private string[] _scrumwiseKanbanizeTag;
 
-		public Kanbanize()
+		public Kanbanize(string kanbanizeBoardID, string kanbanizeLane, string scrumwiseBacklogListID, string scrumwiseProjectID)
 		{
 
 			this._boardID = ConfigurationManager.AppSettings["kanbanizeBoardID"];
 			this._lane = ConfigurationManager.AppSettings["kanbanizeLane"];
-			this._apiurl = ConfigurationManager.AppSettings["kanbanizeAPI"];
+            this._backlogListID = ConfigurationManager.AppSettings["scrumwiseBacklogListID"];
+            this._projectID = ConfigurationManager.AppSettings["scrumwiseProjectID"];
+            this._apiurl = ConfigurationManager.AppSettings["kanbanizeAPI"];
 			this._apiKey = ConfigurationManager.AppSettings["kanbanizeAPIKey"];
 			this._apiKeyValue = ConfigurationManager.AppSettings["kanbanizeAPIKeyValue"];
-			this._backlogListID = ConfigurationManager.AppSettings["scrumwiseBacklogListID"];
-            this._projectID = ConfigurationManager.AppSettings["scrumwiseProjectID"];
-            this._scrumwiseKanbanizeTag = new string[1] { ConfigurationManager.AppSettings["scrumwiseKanbanizeTag"] };
+			this._scrumwiseKanbanizeTag = new string[1] { ConfigurationManager.AppSettings["scrumwiseKanbanizeTag"] };
             this._type = "Bug";
 
 

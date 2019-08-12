@@ -20,11 +20,18 @@ namespace QuickAPITest
 
 		static void Main(string[] args)
 		{
-			Kanbanize kanbanizeConnection = new Kanbanize();
-			Scrumwise scrumwiseConnection = new Scrumwise();
-            scrumwiseConnection.ImportKanbanizeToScrumwise(kanbanizeConnection.ConvertKanbasToScrum(kanbanizeConnection.GetKanbanizeTasks()), scrumwiseConnection.GetKanbanizeItemsInScrumwise());
-            kanbanizeConnection.CreateKanbanizeTasks(kanbanizeConnection.ConvertKanbasToScrum(kanbanizeConnection.GetKanbanizeTasks()),scrumwiseConnection.GetKanbanizeItemsInScrumwise());
-            kanbanizeConnection.KanbanizeMoveTasks(scrumwiseConnection.GetKanbanizeItemsInScrumwise());
+            string[] boardID = ConfigurationManager.AppSettings["kanbanizeBoardID"].Split(',');
+            string[] lane = ConfigurationManager.AppSettings["kanbanizeLane"].Split(',');
+            string[] backlogListID = ConfigurationManager.AppSettings["scrumwiseBacklogListID"].Split(',');
+            string[] projectID = ConfigurationManager.AppSettings["scrumwiseProjectID"].Split(',');
+            for(int i = 0; i < boardID.Count(); i++)
+            {
+                Kanbanize kanbanizeConnection = new Kanbanize(boardID[i], lane[i], backlogListID[i], projectID[i]);
+                Scrumwise scrumwiseConnection = new Scrumwise(projectID[i]);
+                scrumwiseConnection.ImportKanbanizeToScrumwise(kanbanizeConnection.ConvertKanbasToScrum(kanbanizeConnection.GetKanbanizeTasks()), scrumwiseConnection.GetKanbanizeItemsInScrumwise());
+                kanbanizeConnection.CreateKanbanizeTasks(kanbanizeConnection.ConvertKanbasToScrum(kanbanizeConnection.GetKanbanizeTasks()), scrumwiseConnection.GetKanbanizeItemsInScrumwise());
+                kanbanizeConnection.KanbanizeMoveTasks(scrumwiseConnection.GetKanbanizeItemsInScrumwise());
+            }
 		}
 	}
 }
