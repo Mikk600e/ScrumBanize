@@ -77,9 +77,10 @@ namespace QuickAPITest
 			{
 				for (int i = 0; i < scrumwiseItemList.TaskList.Count; i++)
 				{
-                    if (!scrumwiseItemList.TaskList.Exists(x => x.externalID.Equals(kanbanizeTaskList.TaskList[i].externalID)))
+                    if (!kanbanizeTaskList.TaskList.Exists(x => x.externalID.Equals(scrumwiseItemList.TaskList[i].externalID)))
                     {
-                        CreateKanbanizeTask(scrumwiseItemList.TaskList[i]);
+					
+						CreateKanbanizeTask(scrumwiseItemList.TaskList[i]);
                     }
                 }
 				return true;
@@ -138,7 +139,7 @@ namespace QuickAPITest
 				case "High":
 					backlogitem.priority = ScrumwisePriority.High.ToString();
 					break;
-				case "Urgent":
+				case "Critical":
 					backlogitem.priority = ScrumwisePriority.Urgent.ToString();
 					break;
 			}
