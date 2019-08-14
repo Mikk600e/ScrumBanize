@@ -44,7 +44,7 @@ namespace QuickAPITest.Definitions
         public object backlogs { get; set; }
         public Backlogitem[] backlogItems { get; set; }
         public object releases { get; set; }
-        public object sprints { get; set; }
+        public Sprint[] sprints { get; set; }
         public object boards { get; set; }
         public object files { get; set; }
         public object relationships { get; set; }
@@ -251,4 +251,37 @@ namespace QuickAPITest.Definitions
         public object[] tasks { get; set; }
         public object[] childBacklogItems { get; set; }
     }
+    
+    public class Sprint
+    {
+        public string objectType { get; set; }
+        public string id { get; set; }
+        public object externalID { get; set; }
+        public string projectID { get; set; }
+        public string name { get; set; }
+        public string description { get; set; }
+        public object link { get; set; }
+        public string startDate { get; set; }
+        public string endDate { get; set; }
+        public string boardID { get; set; }
+        public string status { get; set; }
+        public bool isArchived { get; set; }
+        public object[] tagIDs { get; set; }
+        public object checklists { get; set; }
+        public object comments { get; set; }
+        public object attachments { get; set; }
+        public Teamsprintparticipation[] teamSprintParticipations { get; set; }
+    }
+
+    public class Teamsprintparticipation
+    {
+        public string objectType { get; set; }
+        public string id { get; set; }
+        public string projectID { get; set; }
+        public string teamID { get; set; }
+        public string sprintID { get; set; }
+        public float availableTime { get; set; }
+        public string[] assignedBacklogItemIDs { get; set; }
+    }
+
 }
