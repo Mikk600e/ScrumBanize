@@ -1,5 +1,6 @@
 ﻿using QuickAPITest.Definitions;
 using RestSharp;
+using ScrumbanizeLibrary.Definitions;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -20,9 +21,10 @@ namespace QuickAPITest
         private string _projectID;
         private string _type;
         private string[] _scrumwiseKanbanizeTag;
+		private Scrumwise _scrumwiseConnection;
 
 		public Kanbanize(string kanbanizeBoardID, string kanbanizeLane, string scrumwiseBacklogListID, 
-            string scrumwiseProjectID, string kanbanizeAPI, string kanbanizeAPIKey, string kanbanizeAPIKeyValue, string scrumwiseKanbanizeTag)
+            string scrumwiseProjectID, string kanbanizeAPI, string kanbanizeAPIKey, string kanbanizeAPIKeyValue, string scrumwiseKanbanizeTag, Scrumwise scrumwiseConnection)
 		{
 
 			this._boardID = kanbanizeBoardID;
@@ -36,7 +38,7 @@ namespace QuickAPITest
 			this._scrumwiseKanbanizeTag = new string[1] { scrumwiseKanbanizeTag };
             this._type = "Bug";
 
-
+			this._scrumwiseConnection = scrumwiseConnection;
 		}
 		public KanbanizeTaskList GetKanbanizeTasks()
 		{
@@ -60,6 +62,11 @@ namespace QuickAPITest
 				Backlogitem container = new Backlogitem();
 				container.backlogListID = _backlogListID;
 				container.description = kanbasTask.TaskList[i].Description;
+				//if externalID==null then externalID ="0" 
+				if (container.externalID==null)
+				{
+					container.externalID = "0";
+				}
 				container.externalID = kanbasTask.TaskList[i].TaskId;
 				container.priority = kanbasTask.TaskList[i].Priority;
 				container.projectID = _projectID;
@@ -77,25 +84,30 @@ namespace QuickAPITest
 		{
 			try
 			{
-				for (int i = 0; i < scrumwiseItemList.TaskList.Count; i++)
+				for (int i = 0; i < kanbanizeTaskList.TaskList.Count; i++)
 				{
-                    if (!kanbanizeTaskList.TaskList.Exists(x => x.externalID.Equals(scrumwiseItemList.TaskList[i].externalID)))
-                    {
+					if (!scrumwiseItemList.TaskList.Exists(x => x.externalID.Equals(kanbanizeTaskList.TaskList[i].externalID)))
+					{
 					
 						CreateKanbanizeTask(scrumwiseItemList.TaskList[i]);
                     }
+					
                 }
-				return true;
+					return true;
 			}
 			catch (Exception)
 			{
-				return false;
+				
 				throw;
+				return false;
 			}
 			
 		}
 		private bool CreateKanbanizeTask(Backlogitem backlogitem)
 		{
+			KanbanizeTaskList kanbanizeTasks = new KanbanizeTaskList();
+			KanbasID kanbasID = new KanbasID();
+
 			RestClient client = new RestClient(_apiurl);
 			RestRequest request = new RestRequest("create_new_task", Method.POST);
 			backlogitem = VariableFitter(backlogitem);
@@ -110,7 +122,13 @@ namespace QuickAPITest
 				title = backlogitem.name,
 				description = backlogitem.description
 			});
+			
 			var response = client.Post(request);
+			var xmlDeserializer = new RestSharp.Deserializers.XmlDeserializer();
+			kanbasID = xmlDeserializer.Deserialize<KanbasID>(response);
+			backlogitem.externalID = kanbasID.id;
+			_scrumwiseConnection.setBacklogItemExternalID(backlogitem);
+			//Scrum.API.UpdateExternalID(backlogITem.ExternalID)
 			return true;
 		}
 		private Backlogitem VariableFitter(Backlogitem backlogitem)

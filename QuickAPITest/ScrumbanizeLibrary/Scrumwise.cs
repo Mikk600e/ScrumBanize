@@ -32,9 +32,10 @@ namespace QuickAPITest
 
 		public bool ImportKanbanizeToScrumwise(ScrumwiseItemList kanbanizeTaskList, ScrumwiseItemList scrumwiseItemList)
 		{
-			for (int i = 0; i < kanbanizeTaskList.TaskList.Count; i++)
+
+			for (int i = 0; i < scrumwiseItemList.TaskList.Count; i++)
 			{
-				if (!kanbanizeTaskList.TaskList.Exists(x => x.externalID.Equals(scrumwiseItemList.TaskList[i].externalID)))
+				if (!scrumwiseItemList.TaskList.Exists(x => x.externalID.Equals(kanbanizeTaskList.TaskList[i].externalID)))
 				{
 
 					CreateBacklogItem(kanbanizeTaskList.TaskList[i]);
@@ -102,6 +103,30 @@ namespace QuickAPITest
 
 			return false;
 		}
+		public bool setBacklogItemExternalID(Backlogitem scrumwiseItem)
+		{
+			try
+			{
+
+				RestClient client = new RestClient(_apiurl);
+				client.Authenticator = new HttpBasicAuthenticator(_userName, _key);
+				RestRequest req = new RestRequest("setBacklogItemExternalID", Method.POST);
+				req.AddParameter("backlogListID", scrumwiseItem.backlogListID);
+				req.AddParameter("externalID", scrumwiseItem.externalID);
+
+
+
+				var createResult = client.Execute<CreateBacklogItemResult>(req);
+
+				return true;
+
+			}
+			catch (Exception)
+			{
+				return false;
+				throw;
+			}
+		}
 
 		public ScrumwiseItemList GetKanbanizeItemsInScrumwise()
 		{
@@ -113,6 +138,10 @@ namespace QuickAPITest
 				if (backlogitem.tagIDs.Contains(_kanbanizeTagID))
 				{
 					scrumwiseItemList.TaskList.Add(backlogitem);
+					if (backlogitem.externalID == null)
+					{
+						backlogitem.externalID = "0";
+					}
 				}
 			}
 
@@ -140,8 +169,5 @@ namespace QuickAPITest
 			client.Execute(request);
 		}
 	}
-
-
-
 }
 
