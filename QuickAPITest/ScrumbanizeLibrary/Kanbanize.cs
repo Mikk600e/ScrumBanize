@@ -17,26 +17,26 @@ namespace QuickAPITest
 		private string _apiurl;
 		private string _apiKey;
 		private string _apiKeyValue;
-        private string _backlogListID;
-        private string _projectID;
-        private string _type;
-        private string[] _scrumwiseKanbanizeTag;
+		private string _backlogListID;
+		private string _projectID;
+		private string _type;
+		private string[] _scrumwiseKanbanizeTag;
 		private Scrumwise _scrumwiseConnection;
 
-		public Kanbanize(string kanbanizeBoardID, string kanbanizeLane, string scrumwiseBacklogListID, 
-            string scrumwiseProjectID, string kanbanizeAPI, string kanbanizeAPIKey, string kanbanizeAPIKeyValue, string scrumwiseKanbanizeTag, Scrumwise scrumwiseConnection)
+		public Kanbanize(string kanbanizeBoardID, string kanbanizeLane, string scrumwiseBacklogListID,
+			string scrumwiseProjectID, string kanbanizeAPI, string kanbanizeAPIKey, string kanbanizeAPIKeyValue, string scrumwiseKanbanizeTag, Scrumwise scrumwiseConnection)
 		{
 
 			this._boardID = kanbanizeBoardID;
 			this._lane = kanbanizeLane;
-            this._backlogListID = scrumwiseBacklogListID;
-            this._projectID = scrumwiseProjectID;
+			this._backlogListID = scrumwiseBacklogListID;
+			this._projectID = scrumwiseProjectID;
 
-            this._apiurl = kanbanizeAPI;
+			this._apiurl = kanbanizeAPI;
 			this._apiKey = kanbanizeAPIKey;
 			this._apiKeyValue = kanbanizeAPIKeyValue;
 			this._scrumwiseKanbanizeTag = new string[1] { scrumwiseKanbanizeTag };
-            this._type = "Bug";
+			this._type = "Bug";
 
 			this._scrumwiseConnection = scrumwiseConnection;
 		}
@@ -63,7 +63,7 @@ namespace QuickAPITest
 				container.backlogListID = _backlogListID;
 				container.description = kanbasTask.TaskList[i].Description;
 				//if externalID==null then externalID ="0" 
-				if (container.externalID==null)
+				if (container.externalID == null)
 				{
 					container.externalID = "0";
 				}
@@ -80,28 +80,24 @@ namespace QuickAPITest
 
 			return scrumwiseItemList;
 		}
-		public bool CreateKanbanizeTasks(ScrumwiseItemList kanbanizeTaskList , ScrumwiseItemList scrumwiseItemList)
+		public bool CreateKanbanizeTasks(ScrumwiseItemList kanbanizeTaskList, ScrumwiseItemList scrumwiseItemList)
 		{
 			try
 			{
-				for (int i = 0; i < kanbanizeTaskList.TaskList.Count; i++)
+				foreach (Backlogitem scrumwiseItem in scrumwiseItemList.TaskList)
 				{
-					if (!scrumwiseItemList.TaskList.Exists(x => x.externalID.Equals(kanbanizeTaskList.TaskList[i].externalID)))
+					if (!kanbanizeTaskList.TaskList.Exists(x => x.externalID.Equals(scrumwiseItem.externalID))) // If the Kanbanize task already exists in Scrumwise, don't try to create it again
 					{
-					
-						CreateKanbanizeTask(scrumwiseItemList.TaskList[i]);
-                    }
-					
-                }
-					return true;
+						CreateKanbanizeTask(scrumwiseItem);
+					}
+				}
+				return true;
 			}
 			catch (Exception)
 			{
-				
-				throw;
 				return false;
 			}
-			
+
 		}
 		private bool CreateKanbanizeTask(Backlogitem backlogitem)
 		{
@@ -122,7 +118,7 @@ namespace QuickAPITest
 				title = backlogitem.name,
 				description = backlogitem.description
 			});
-			
+
 			var response = client.Post(request);
 			var xmlDeserializer = new RestSharp.Deserializers.XmlDeserializer();
 			kanbasID = xmlDeserializer.Deserialize<KanbasID>(response);
