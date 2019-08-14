@@ -33,14 +33,12 @@ namespace QuickAPITest
 		public bool ImportKanbanizeToScrumwise(ScrumwiseItemList kanbanizeTaskList, ScrumwiseItemList scrumwiseItemList)
 		{
 
-			foreach (Backlogitem kanbanTask in kanbanizeTaskList.TaskList)
+			for (int i = 0; i < scrumwiseItemList.TaskList.Count; i++)
 			{
-				if (!scrumwiseItemList.TaskList.Exists(x => x.externalID.Equals(kanbanTask.externalID))) // If the Kanbanize task already exists in Scrumwise, don't try to create it again
+				if (!scrumwiseItemList.TaskList.Exists(x => x.externalID.Equals(kanbanizeTaskList.TaskList[i].externalID)))
 				{
-					if (!CreateBacklogItem(kanbanTask))
-					{
-						return false;
-					}
+
+					CreateBacklogItem(kanbanizeTaskList.TaskList[i]);
 				}
 			}
 			return true;
@@ -113,7 +111,7 @@ namespace QuickAPITest
 				RestClient client = new RestClient(_apiurl);
 				client.Authenticator = new HttpBasicAuthenticator(_userName, _key);
 				RestRequest req = new RestRequest("setBacklogItemExternalID", Method.POST);
-				req.AddParameter("backlogItemID", scrumwiseItem.id);
+				req.AddParameter("backlogListID", scrumwiseItem.backlogListID);
 				req.AddParameter("externalID", scrumwiseItem.externalID);
 
 
