@@ -20,9 +20,11 @@ namespace SprintTemplate
             string scrumwiseBacklogListID = ConfigurationManager.AppSettings["scrumwiseBacklogListID"];
             string scrumwiseProjectID = ConfigurationManager.AppSettings["scrumwiseProjectID"];
             string scrumwiseTeamID = ConfigurationManager.AppSettings["scrumwiseTeamID"];
+            string scrumwiseTemplateTagID = ConfigurationManager.AppSettings["scrumwiseTemplateTagID"];
+            string scrumwiseEstimateUnit = ConfigurationManager.AppSettings["scrumwiseEstimateUnit"];
 
-            Scrumwise scrumwiseConnection = new Scrumwise(scrumwiseProjectID, scrumwiseUser, scrumwiseKey, scrumwiseAPI, scrumwiseBacklogListID);
-            ScrumwiseItemList scrumwiseItemList = scrumwiseConnection.GetListItemsInScrumwise();
+            Scrumwise scrumwiseConnection = new Scrumwise(scrumwiseProjectID, scrumwiseUser, scrumwiseKey, scrumwiseAPI, scrumwiseBacklogListID, scrumwiseTemplateTagID, scrumwiseTeamID, scrumwiseEstimateUnit);
+            ScrumwiseItemList scrumwiseItemList = scrumwiseConnection.GetTemplateItemsInScrumwise();
             Console.WriteLine("Indtast venligst navn på Sprint templates skal tilknyttes: ");
             string sprintName = Console.ReadLine();
             Sprint sprint = scrumwiseConnection.GetSprintInScrumwise(sprintName);

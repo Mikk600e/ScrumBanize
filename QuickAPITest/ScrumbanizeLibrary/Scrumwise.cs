@@ -18,9 +18,12 @@ namespace QuickAPITest
 		private string _apiurl;
 		private string _userName;
 		private string _key;
-		private string _kanbanizeTagID;
-		private string _projectID;
+        private string _kanbanizeTagID;
+        private string _projectID;
         private string _backlogListID;
+        private string _templateTagID;
+        private string _teamID;
+        private string _estimateUnit;
 
         public Scrumwise(string scrumwiseProjectID, string scrumwiseUser, string scrumwiseKey, string scrumwiseAPI, string scrumwiseBacklogListID, string scrumwiseKanbanizeTag)
         {
@@ -32,16 +35,19 @@ namespace QuickAPITest
             this._backlogListID = scrumwiseBacklogListID;
         }
 
-        public Scrumwise(string scrumwiseProjectID, string scrumwiseUser, string scrumwiseKey, string scrumwiseAPI, string scrumwiseBacklogListID)
+        public Scrumwise(string scrumwiseProjectID, string scrumwiseUser, string scrumwiseKey, string scrumwiseAPI, string scrumwiseBacklogListID, string scrumwiseTemplateTagID, string scrumwiseTeamID, string scrumwiseEstimateUnit)
         {
             this._userName = scrumwiseUser;
             this._key = scrumwiseKey;
             this._apiurl = scrumwiseAPI;
             this._projectID = scrumwiseProjectID;
             this._backlogListID = scrumwiseBacklogListID;
+            this._templateTagID = scrumwiseTemplateTagID;
+            this._teamID = scrumwiseTeamID;
+            this._estimateUnit = scrumwiseEstimateUnit;
         }
 
-        
+
         public bool ImportKanbanizeToScrumwise(ScrumwiseItemList kanbanizeTaskList, ScrumwiseItemList scrumwiseItemList)
 		{
 			foreach (Backlogitem kanbanTask in kanbanizeTaskList.TaskList)
@@ -61,6 +67,13 @@ namespace QuickAPITest
             foreach(Backlogitem backlogitem in scrumwiseItemList.TaskList)
             {
                 backlogitem.sprintID = sprintToBeTemplated.id;
+                for(int i=0; i< backlogitem.tagIDs.Count(); i++)
+                {
+                    if (backlogitem.tagIDs[i] == _templateTagID)
+                    {
+                        backlogitem.tagIDs[i] = null;
+                    }
+                }
                 CreateBacklogItem(backlogitem);
             }
             return true;
@@ -80,8 +93,7 @@ namespace QuickAPITest
 				req.AddParameter("externalID", scrumwiseItem.externalID);
 				req.AddParameter("type", scrumwiseItem.type);
                 req.AddParameter("estimate", scrumwiseItem.estimate);
-                req.AddParameter("status", scrumwiseItem.status);
-                req.AddParameter("estimateUnit", "Hours");
+                req.AddParameter("estimateUnit", _estimateUnit);
                 req.AddParameter("name", scrumwiseItem.name);
                 req.AddParameter("description", scrumwiseItem.description);
 
@@ -214,6 +226,24 @@ namespace QuickAPITest
             return scrumwiseItemList;
         }
 
+        public ScrumwiseItemList GetTemplateItemsInScrumwise()
+        {
+            ScrumwiseItemList scrumwiseItemList = GetListItemsInScrumwise();
+            ScrumwiseItemList templateItemList = new ScrumwiseItemList();
+
+            templateItemList.TaskList = new List<Backlogitem>();
+            
+            foreach (Backlogitem backlogitem in scrumwiseItemList.TaskList)
+            {
+                if (backlogitem.tagIDs.Contains(_templateTagID))
+                {
+                    templateItemList.TaskList.Add(backlogitem);
+                }
+            }
+
+            return templateItemList;
+        }
+
         public Sprint GetSprintInScrumwise(string sprintName)
         {
             Sprint foundSprint = new Sprint();
@@ -244,7 +274,7 @@ namespace QuickAPITest
             client.Authenticator = new HttpBasicAuthenticator(_userName, _key);
             RestRequest request = new RestRequest("assignBacklogItemToSprint", Method.POST);
             request.AddParameter("sprintID", backlogitem.sprintID);
-            request.AddParameter("teamID", "191469-0-10");
+            request.AddParameter("teamID", _teamID);
             request.AddParameter("backlogItemID", backlogitem.id);
             var response = client.Execute(request);
         }
