@@ -50,8 +50,11 @@
     <Compile Include="Definitions\KanbanizeTask.cs" />
     <Compile Include="Definitions\KanbanizeTaskList.cs" />
     <Compile Include="Definitions\KanbannizeTypes.cs" />
+<<<<<<< HEAD
     <Compile Include="Definitions\KanbasID.cs" />
     <Compile Include="Definitions\ScrumwiseItem.cs" />
+=======
+>>>>>>> master
     <Compile Include="Definitions\ScrumwiseItemList.cs" />
     <Compile Include="Definitions\ScrumwisePriority.cs" />
     <Compile Include="Definitions\ScrumwiseProject.cs" />
