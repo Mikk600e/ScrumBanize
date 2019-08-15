@@ -25,14 +25,28 @@ namespace SprintTemplate
 
             Scrumwise scrumwiseConnection = new Scrumwise(scrumwiseProjectID, scrumwiseUser, scrumwiseKey, scrumwiseAPI, scrumwiseBacklogListID, scrumwiseTemplateTagID, scrumwiseTeamID, scrumwiseEstimateUnit);
             ScrumwiseItemList scrumwiseItemList = scrumwiseConnection.GetTemplateItemsInScrumwise();
-            Console.WriteLine("Indtast venligst navn på Sprint templates skal tilknyttes: ");
-            string sprintName = Console.ReadLine();
-            Sprint sprint = scrumwiseConnection.GetSprintInScrumwise(sprintName);
-            if (scrumwiseConnection.CreateSprintTemplate(sprint, scrumwiseItemList))
+            bool keepGoing = true;
+            while (keepGoing)
             {
-                Console.WriteLine("Alt gik godt");
+                Console.WriteLine("Indtast venligst navn på Sprint templates skal tilknyttes eller Q for at afslutte: ");
+                string sprintName = Console.ReadLine();
+                if(sprintName == "Q")
+                {
+                    keepGoing = false;
+                }
+                else
+                {
+                    Sprint sprint = scrumwiseConnection.GetSprintInScrumwise(sprintName);
+                    if (sprint.id != null)
+                    {
+                        if (scrumwiseConnection.CreateSprintTemplate(sprint, scrumwiseItemList))
+                        {
+                            Console.WriteLine("Alt gik godt");
+                            keepGoing = false;
+                        }
+                    }
+                }
             }
-
             Console.ReadKey();
         }
     }
