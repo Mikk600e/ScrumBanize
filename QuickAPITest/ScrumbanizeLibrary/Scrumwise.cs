@@ -92,8 +92,13 @@ namespace QuickAPITest
 				req.AddParameter("backlogListID", scrumwiseItem.backlogListID);
 				req.AddParameter("externalID", scrumwiseItem.externalID);
 				req.AddParameter("type", scrumwiseItem.type);
-                req.AddParameter("estimate", scrumwiseItem.estimate);
-                req.AddParameter("estimateUnit", _estimateUnit);
+                //req.AddParameter("estimate", scrumwiseItem.estimate);
+				//IMPORTANT FIX! Tell Brian ASAP
+				if (_estimateUnit != null)
+				{
+					req.AddParameter("estimate", scrumwiseItem.estimate);
+					req.AddParameter("estimateUnit", _estimateUnit);
+				}
                 req.AddParameter("name", scrumwiseItem.name);
                 req.AddParameter("description", scrumwiseItem.description);
 
