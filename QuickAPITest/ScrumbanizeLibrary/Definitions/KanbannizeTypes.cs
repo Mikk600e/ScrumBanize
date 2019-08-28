@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace QuickAPITest.Definitions
 {
-	class KanbannizeTypes
+	public enum KanbannizeTypes
 	{
+		[Description("Set type as bug")]
+		Bug = 1,
+		[Description("Set type as Feature")]
+		Feature = 2,
 	}
 }

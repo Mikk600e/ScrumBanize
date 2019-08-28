@@ -13,5 +13,6 @@ namespace QuickAPITest.Definitions
         public string Title { get; set; }
         public string Description { get; set; }
 		public string Columnname { get; set; }
+		public string tags { get; set; }
     }
 }

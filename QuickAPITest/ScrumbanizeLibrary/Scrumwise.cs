@@ -24,8 +24,9 @@ namespace QuickAPITest
         private string _templateTagID;
         private string _teamID;
         private string _estimateUnit;
+		private string _scrumwiseRejectedTag;
 
-        public Scrumwise(string scrumwiseProjectID, string scrumwiseUser, string scrumwiseKey, string scrumwiseAPI, string scrumwiseBacklogListID, string scrumwiseKanbanizeTag)
+		public Scrumwise(string scrumwiseProjectID, string scrumwiseUser, string scrumwiseKey, string scrumwiseAPI, string scrumwiseBacklogListID, string scrumwiseKanbanizeTag, string scrumwiseRejectedTag)
         {
             this._userName = scrumwiseUser;
             this._key = scrumwiseKey;
@@ -33,6 +34,7 @@ namespace QuickAPITest
             this._kanbanizeTagID = scrumwiseKanbanizeTag;
             this._projectID = scrumwiseProjectID;
             this._backlogListID = scrumwiseBacklogListID;
+			this._scrumwiseRejectedTag = scrumwiseRejectedTag;
         }
 
         public Scrumwise(string scrumwiseProjectID, string scrumwiseUser, string scrumwiseKey, string scrumwiseAPI, string scrumwiseBacklogListID, string scrumwiseTemplateTagID, string scrumwiseTeamID, string scrumwiseEstimateUnit)
@@ -45,7 +47,7 @@ namespace QuickAPITest
             this._templateTagID = scrumwiseTemplateTagID;
             this._teamID = scrumwiseTeamID;
             this._estimateUnit = scrumwiseEstimateUnit;
-        }
+		}
 
 
         public bool ImportKanbanizeToScrumwise(ScrumwiseItemList kanbanizeTaskList, ScrumwiseItemList scrumwiseItemList)
@@ -92,8 +94,6 @@ namespace QuickAPITest
 				req.AddParameter("backlogListID", scrumwiseItem.backlogListID);
 				req.AddParameter("externalID", scrumwiseItem.externalID);
 				req.AddParameter("type", scrumwiseItem.type);
-                //req.AddParameter("estimate", scrumwiseItem.estimate);
-				//IMPORTANT FIX! Tell Brian ASAP
 				if (_estimateUnit != null)
 				{
 					req.AddParameter("estimate", scrumwiseItem.estimate);

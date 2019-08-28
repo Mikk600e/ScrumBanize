@@ -25,20 +25,21 @@ namespace QuickAPITest
             string kanbanizeAPI = ConfigurationManager.AppSettings["kanbanizeAPI"];
             string kanbanizeAPIKey = ConfigurationManager.AppSettings["kanbanizeAPIKey"];
             string kanbanizeAPIKeyValue = ConfigurationManager.AppSettings["kanbanizeAPIKeyValue"];
-            string scrumwiseKanbanizeTag = ConfigurationManager.AppSettings["scrumwiseKanbanizeTag"];
             string scrumwiseUser = ConfigurationManager.AppSettings["scrumwiseUser"];
             string scrumwiseKey = ConfigurationManager.AppSettings["scrumwiseKey"];
             string scrumwiseAPI = ConfigurationManager.AppSettings["scrumwiseAPI"];
-
-            string[] boardID = ConfigurationManager.AppSettings["kanbanizeBoardID"].Split(',');
+			string scrumwiseKanbanizeTag = ConfigurationManager.AppSettings["scrumwiseKanbanizeTag"];
+			string scrumwiseRejectedTag = ConfigurationManager.AppSettings["scrumwiseRejectedTag"];
+			string[] boardID = ConfigurationManager.AppSettings["kanbanizeBoardID"].Split(',');
             string[] lane = ConfigurationManager.AppSettings["kanbanizeLane"].Split(',');
             string[] backlogListID = ConfigurationManager.AppSettings["scrumwiseBacklogListID"].Split(',');
             string[] projectID = ConfigurationManager.AppSettings["scrumwiseProjectID"].Split(',');
             for(int i = 0; i < boardID.Count(); i++)
             {
-
-				Scrumwise scrumwiseConnection = new Scrumwise(projectID[i], scrumwiseUser, scrumwiseKey, scrumwiseAPI, backlogListID[i], scrumwiseKanbanizeTag);
-				Kanbanize kanbanizeConnection = new Kanbanize(boardID[i], lane[i], backlogListID[i], projectID[i], kanbanizeAPI, kanbanizeAPIKey, kanbanizeAPIKeyValue, scrumwiseKanbanizeTag, scrumwiseConnection);
+				
+				Scrumwise scrumwiseConnection = new Scrumwise(projectID[i], scrumwiseUser, scrumwiseKey, scrumwiseAPI, backlogListID[i], scrumwiseKanbanizeTag, scrumwiseRejectedTag);
+				Kanbanize kanbanizeConnection = new Kanbanize(boardID[i], lane[i], backlogListID[i], projectID[i], kanbanizeAPI, kanbanizeAPIKey, kanbanizeAPIKeyValue, scrumwiseKanbanizeTag, scrumwiseConnection, scrumwiseRejectedTag);
+				kanbanizeConnection.KanbanizeCheckRejected(scrumwiseConnection.GetKanbanizeItemsInScrumwise());
 				scrumwiseConnection.ImportKanbanizeToScrumwise(kanbanizeConnection.ConvertKanbasToScrum(kanbanizeConnection.GetKanbanizeTasks()), scrumwiseConnection.GetKanbanizeItemsInScrumwise());
                 kanbanizeConnection.CreateKanbanizeTasks(kanbanizeConnection.ConvertKanbasToScrum(kanbanizeConnection.GetKanbanizeTasks()), scrumwiseConnection.GetKanbanizeItemsInScrumwise());
                 kanbanizeConnection.KanbanizeMoveTasks(scrumwiseConnection.GetKanbanizeItemsInScrumwise());

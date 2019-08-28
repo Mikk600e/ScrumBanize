@@ -19,24 +19,23 @@ namespace QuickAPITest
 		private string _apiKeyValue;
 		private string _backlogListID;
 		private string _projectID;
-		private string _type;
 		private string[] _scrumwiseKanbanizeTag;
+		private string _scrumwiseRejectedTag;
 		private Scrumwise _scrumwiseConnection;
 
 		public Kanbanize(string kanbanizeBoardID, string kanbanizeLane, string scrumwiseBacklogListID,
-			string scrumwiseProjectID, string kanbanizeAPI, string kanbanizeAPIKey, string kanbanizeAPIKeyValue, string scrumwiseKanbanizeTag, Scrumwise scrumwiseConnection)
+			string scrumwiseProjectID, string kanbanizeAPI, string kanbanizeAPIKey, string kanbanizeAPIKeyValue, string scrumwiseKanbanizeTag, Scrumwise scrumwiseConnection, string scrumwiseRejectedTag)
 		{
 
 			this._boardID = kanbanizeBoardID;
 			this._lane = kanbanizeLane;
 			this._backlogListID = scrumwiseBacklogListID;
 			this._projectID = scrumwiseProjectID;
-
+			this._scrumwiseRejectedTag = scrumwiseRejectedTag;
 			this._apiurl = kanbanizeAPI;
 			this._apiKey = kanbanizeAPIKey;
 			this._apiKeyValue = kanbanizeAPIKeyValue;
 			this._scrumwiseKanbanizeTag = new string[1] { scrumwiseKanbanizeTag };
-			this._type = "Bug";
 
 			this._scrumwiseConnection = scrumwiseConnection;
 		}
@@ -72,7 +71,7 @@ namespace QuickAPITest
 				container.projectID = _projectID;
 				container.tagIDs = _scrumwiseKanbanizeTag;
 				container.name = kanbasTask.TaskList[i].Title;
-				container.type = _type;
+				container.type = "Feature";			
 				container.status = kanbasTask.TaskList[i].Columnname.ToLower();
 				container = VariableFitter(container);
 				scrumwiseItemList.TaskList.Add(container);
@@ -192,6 +191,49 @@ namespace QuickAPITest
 			});
 			var response = client.Post(request);
 			return false;
+		}
+		public bool KanbanizeCheckRejected(ScrumwiseItemList scrumwiseItemList)
+		{
+			KanbanizeTaskList container = GetKanbanizeTasks();
+			foreach (Backlogitem backlogitem in scrumwiseItemList.TaskList)
+			{
+				if (backlogitem.tagIDs.Contains(_scrumwiseRejectedTag))
+				{
+					foreach (Item itemToBeChecked in container.TaskList)
+					{
+						if (itemToBeChecked.tags == null)
+							itemToBeChecked.tags = "";
+						if (itemToBeChecked.TaskId == backlogitem.externalID.ToString() && !itemToBeChecked.tags.Contains("Rejected"))
+						{
+							if (!KanbanizeEditTask(backlogitem))
+								return false;
+						}
+					}
+				}
+			}
+			return true;
+		}
+		private bool KanbanizeEditTask(Backlogitem backlogitem)
+		{
+			try
+			{
+				RestClient client = new RestClient(_apiurl);
+				RestRequest request = new RestRequest("edit_task", Method.POST);
+				request.AddHeader(_apiKey, _apiKeyValue);
+				request.AddJsonBody(new
+				{
+					boardid = _boardID,
+					taskid = backlogitem.externalID,
+					tags = "Rejected"
+				});
+				var response = client.Post(request);
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
+				throw;
+			}
 		}
 	}
 }
