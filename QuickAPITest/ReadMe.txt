@@ -7,6 +7,7 @@ Setup:
 	scrumwiseKey - The API key connected to the aforementioned user on Scrumwise
 	scrumwiseAPI - The URL to the Scumwise API you want to connnect to, we're using v1
 	scrumwiseKanbanizeTag - The Tag ID of the Kanbanize tag in Scrumwise, is used to differentiate where the task comes from and if the mover should handle it
+	scrumwiseKanbanizeTag - The Tag ID of the Rejected tag in Scrumwise, is used to designate a Scumwise task for deletion and adding the rejected tag on the task in Kanbanize
 	scrumwiseProjectID - A comma-seperated list of Scrumwise project ID's. Will cycle through each of the projects in order and match up with the connected Kanbanize board Id.
 	scrumwiseBacklogListID - A comma-seperated list of Scrumwise backloglist ID's. Corresponds to the Scrumwise project ID in the same position in the list. Is used to tell the mover in which list to put the data from Kanbanize.
 	kanbanizeBoardID - A comma-seperated list of Kanbanize board ID's. Used to tell from which board the mover should look at on Kanbanize. Corresponds to same position in the scrumwiseProjectID list.
