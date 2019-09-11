@@ -103,7 +103,7 @@ namespace QuickAPITest
 			KanbanizeTaskList kanbanizeTasks = new KanbanizeTaskList();
 			KanbasID kanbasID = new KanbasID();
 			backlogitem = VariableFitter(backlogitem);
-			if (!CheckIfOutdated(backlogitem))
+			if (backlogitem.status == "arkiv")
 			{
 				return true;
 			}
@@ -127,18 +127,6 @@ namespace QuickAPITest
 			backlogitem.externalID = kanbasID.id;
 			_scrumwiseConnection.setBacklogItemExternalID(backlogitem);
 			//Scrum.API.UpdateExternalID(backlogITem.ExternalID)
-			return true;
-		}
-		private bool CheckIfOutdated(Backlogitem backlogitem)
-		{
-			if (backlogitem.status == "arkiv")
-			{
-				return false;
-			}
-			if (backlogitem.status == "done")
-			{
-				return false;
-			}
 			return true;
 		}
 		private Backlogitem VariableFitter(Backlogitem backlogitem)
