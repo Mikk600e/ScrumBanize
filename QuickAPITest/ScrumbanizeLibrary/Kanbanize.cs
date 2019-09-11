@@ -102,10 +102,13 @@ namespace QuickAPITest
 		{
 			KanbanizeTaskList kanbanizeTasks = new KanbanizeTaskList();
 			KanbasID kanbasID = new KanbasID();
-
+			backlogitem = VariableFitter(backlogitem);
+			if (!CheckIfOutdated(backlogitem))
+			{
+				return true;
+			}
 			RestClient client = new RestClient(_apiurl);
 			RestRequest request = new RestRequest("create_new_task", Method.POST);
-			backlogitem = VariableFitter(backlogitem);
 			request.AddHeader(_apiKey, _apiKeyValue);
 			request.AddJsonBody(new
 			{
@@ -126,6 +129,18 @@ namespace QuickAPITest
 			//Scrum.API.UpdateExternalID(backlogITem.ExternalID)
 			return true;
 		}
+		private bool CheckIfOutdated(Backlogitem backlogitem)
+		{
+			if (backlogitem.status == "arkiv")
+			{
+				return false;
+			}
+			if (backlogitem.status == "done")
+			{
+				return false;
+			}
+			return true;
+		}
 		private Backlogitem VariableFitter(Backlogitem backlogitem)
 		{
 			switch (backlogitem.status)
@@ -141,6 +156,9 @@ namespace QuickAPITest
 					break;
 				case "New":
 					backlogitem.status = KanbanizeStatus.planlagt.ToString();
+					break;
+				case "Sprint complete":
+					backlogitem.status = KanbanizeStatus.arkiv.ToString();
 					break;
 			}
 			switch (backlogitem.priority)

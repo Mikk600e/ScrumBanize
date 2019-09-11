@@ -11,6 +11,9 @@ namespace QuickAPITest.Definitions
 		igang = 2,
 		[Description("Done")]
 		done = 3,
+		[Description("Sprint complete")]
+		arkiv= 4,
+
 
 	}
 }
