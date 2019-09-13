@@ -145,7 +145,7 @@ namespace QuickAPITest
 				case "New":
 					backlogitem.status = KanbanizeStatus.planlagt.ToString();
 					break;
-				case "Sprint complete":
+				case "Sprint completed":
 					backlogitem.status = KanbanizeStatus.arkiv.ToString();
 					break;
 			}
