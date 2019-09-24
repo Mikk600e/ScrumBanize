@@ -188,6 +188,18 @@ namespace QuickAPITest
 			RestClient client = new RestClient(_apiurl);
 			RestRequest request = new RestRequest("move_task", Method.POST);
 			VariableFitter(backlogitem);
+			KanbanizeTaskList kanbanizeTasks = new KanbanizeTaskList();
+			kanbanizeTasks = GetKanbanizeTasks();
+			foreach (Item itemToBeChecked in kanbanizeTasks.TaskList)
+			{
+				if (backlogitem.externalID == itemToBeChecked.TaskId)
+				{
+					if (itemToBeChecked.Columnname == "arkiv" && backlogitem.status == KanbanizeStatus.done.ToString())
+						return false;
+				}
+			}
+			
+
 			request.AddHeader(_apiKey, _apiKeyValue);
 			request.AddJsonBody(new
 			{
