@@ -194,7 +194,7 @@ namespace QuickAPITest
 			{
 				if (backlogitem.externalID == itemToBeChecked.TaskId)
 				{
-					if (itemToBeChecked.Columnname == "arkiv" && backlogitem.status == KanbanizeStatus.done.ToString())
+					if (itemToBeChecked.Columnname == "Arkiv" && backlogitem.status == KanbanizeStatus.done.ToString())
 						return false;
 				}
 			}
