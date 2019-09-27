@@ -171,9 +171,11 @@ namespace QuickAPITest
 		{
 			try
 			{
+				KanbanizeTaskList kanbanizeTasks = new KanbanizeTaskList();
+				kanbanizeTasks = GetKanbanizeTasks();
 				for (int i = 0; i < scrumwiseItemList.TaskList.Count; i++)
 				{
-					KanbanizeMoveTask(scrumwiseItemList.TaskList[i]);
+					KanbanizeMoveTask(scrumwiseItemList.TaskList[i], kanbanizeTasks);
 				}
 				return true;
 			}
@@ -183,16 +185,14 @@ namespace QuickAPITest
 				throw;
 			}
 		}
-		private bool KanbanizeMoveTask(Backlogitem backlogitem)
+		private bool KanbanizeMoveTask(Backlogitem backlogitem, KanbanizeTaskList kanbanizeTask)
 		{
 			RestClient client = new RestClient(_apiurl);
 			RestRequest request = new RestRequest("move_task", Method.POST);
 			VariableFitter(backlogitem);
-			KanbanizeTaskList kanbanizeTasks = new KanbanizeTaskList();
-			kanbanizeTasks = GetKanbanizeTasks();
-			foreach (Item itemToBeChecked in kanbanizeTasks.TaskList)
+			foreach (Item itemToBeChecked in kanbanizeTask.TaskList)
 			{
-				if (backlogitem.externalID == itemToBeChecked.TaskId)
+				if (backlogitem.externalID.ToString() == itemToBeChecked.TaskId)
 				{
 					if (itemToBeChecked.Columnname == "Arkiv" && backlogitem.status == KanbanizeStatus.done.ToString())
 						return false;
